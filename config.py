@@ -11,6 +11,7 @@ class RoutesConfig(BaseModel):
 class Settings(BaseSettings):
   database_url: str
   flask_app: str
+  secret_key: str
   routes: RoutesConfig = RoutesConfig()
   model_config = SettingsConfigDict(
     env_file=(BASE_DIR / ".env"),
