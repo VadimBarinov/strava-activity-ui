@@ -26,7 +26,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user_qwerty -d qa_test_generator"]
+      test: ["CMD-SHELL", "pg_isready -U user_qwerty -d strava_activity"]
       interval: 5s
       timeout: 5s
       retries: 5
