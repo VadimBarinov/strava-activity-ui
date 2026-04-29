@@ -9,8 +9,8 @@ class RoutesConfig(BaseModel):
   strava_activity_prefix: str = "/strava-activity"
 
 class Settings(BaseSettings):
+  database_url: str
   flask_app: str
-  model_path: str
   routes: RoutesConfig = RoutesConfig()
   model_config = SettingsConfigDict(
     env_file=(BASE_DIR / ".env"),
