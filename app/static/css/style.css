@@ -51,6 +51,10 @@
   border-radius: var(--bs-card-border-radius);
 }
 
+.map-in-activity-page {
+  height: 32rem;
+}
+
 .leaflet-control-attribution {
   display: none;
 }

@@ -9,14 +9,14 @@
     Синхронизировать со Strava
   </button>
 </div>
+
+<div id="map" class="map map-in-activity-page mb-5"></div>
+
 <div id="{{ activity.id }}" class="card shadow-sm border-0 bg-light mb-5"
   role="button"
   data-href="{{ url_for('strava_activity.activity', athlete_id=activity.athlete.id, activity_id=activity.id) }}">
   <div class="card-body">
     <div class="d-flex row">
-      <div class="col-4">
-        <div id="map_{{ activity.map.id }}" class="map"></div>
-      </div>
 
       <div class="col-8">
         <div class="mb-4">
@@ -87,7 +87,7 @@
 <script src="{{ url_for('static', filename='js/render_route_map.js') }}"></script>
 <script>
   renderRouteMap(
-    "map_{{ activity.map.id }}",
+    "map",
     {{ activity.map.summary_polyline | tojson }}  // важно: tojson экранирует строку
   );
 </script>
