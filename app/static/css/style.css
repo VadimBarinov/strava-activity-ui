@@ -19,3 +19,11 @@
   --bs-btn-disabled-bg: var(--bs-primary);
   --bs-btn-disabled-border-color: var(--bs-primary);
 }
+
+.gradient-text {
+  background-image: linear-gradient(to right, #672F2F, var(--bs-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

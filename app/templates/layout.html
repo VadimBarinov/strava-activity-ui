@@ -27,13 +27,13 @@
     <nav class="navbar shadow-sm py-4">
       <div class="d-flex justify-content-between align-items-center container">
         <span class="navbar-brand mb-0 h1">
-          <i class="bi bi-strava text-primary me-2"></i>
+          <i class="bi bi-bar-chart-line-fill text-primary me-2"></i>
           Анализатор тренировок
         </span>
         
         <div class="d-flex align-items-center">
-          <a class="btn btn-primary" href="#">
-            <i class="bi bi-box-arrow-in-right me-2"></i>
+          <a class="btn btn-primary fw-bold" href="#">
+            <i class="bi bi-strava me-2"></i>
             Войти через Strava
           </a>
         </div>
@@ -47,14 +47,14 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="border-top py-4 small">
+    <footer class="border-top mt-5 py-4 small">
       <div class="container d-flex justify-content-between align-items-center">
         {% block footer %}
         <div>
           <img 
             src="{{ url_for('static', filename='images/logo.svg') }}" 
             alt="VELIK"
-            width="60"
+            width="50"
             class="mb-3"
           />
           <div class="d-flex">

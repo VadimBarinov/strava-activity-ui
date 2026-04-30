@@ -2,5 +2,43 @@
 {% block title %}Главная{% endblock %}
 
 {% block content %}
-привет
+
+<div class="d-flex mb-3">
+  <h1 class="gradient-text fw-bold">
+    Раскройте потенциал&nbsp
+  </h1>
+  <h1>
+    <img 
+      src="{{ url_for('static', filename='images/strava_logo.svg') }}" 
+      alt="STRAVA"
+      width="130"
+    />
+  </h1>
+</div>
+
+<div class="mb-4">
+  <p>
+    Узнайте свою зону мощности по доктору Эндрю Коггану
+  </p>
+</div>
+
+<div class="mb-4">
+  <p>
+    Войдите через Strava, чтобы мы могли получить данные о вашей физической активности
+  </p>
+</div>
+
+<div class="mb-2">
+  <a class="btn btn-primary btn-lg px-4 fw-bold" href="#">
+    <i class="bi bi-strava me-2"></i>
+    Войти через Strava
+  </a>
+</div>
+
+<div class="mb-4">
+  <p class="text-muted small">
+    Бесплатно. Безопасно. Удобно.
+  </p>
+</div>
+
 {% endblock %}
