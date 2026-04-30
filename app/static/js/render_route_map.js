@@ -40,12 +40,24 @@ function renderRouteMap(containerId, encodedPolyline, options = {}) {
     opacity: 1
   }).addTo(map);
 
-  map.fitBounds(route.getBounds(), { padding: [20, 20] });
+  map.fitBounds(route.getBounds(), { padding: [10, 10] });
 
   L.marker(latlngs[0], { icon: dotIcon(color) }).addTo(map).bindPopup("Старт");
   L.marker(latlngs[latlngs.length - 1], { icon: dotIcon(color) }).addTo(map).bindPopup("Финиш");
 
   return { map, route };
+}
+
+function renderRouteMapWithoutZoom(containerId, encodedPolyline, options = {}) {
+  const {map, route} = renderRouteMap(containerId, encodedPolyline, options)
+  map.dragging.disable();
+  map.scrollWheelZoom.disable();
+  map.doubleClickZoom.disable();
+  map.boxZoom.disable();
+  map.keyboard.disable();
+  map.touchZoom.disable();
+  map.tap?.disable();
+  map.zoomControl.remove();
 }
 
 function dotIcon(color) {

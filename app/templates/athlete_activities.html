@@ -96,7 +96,7 @@
 </script>
 <script>
   {% for activity in activities %}
-    renderRouteMap(
+    renderRouteMapWithoutZoom(
       "map_{{ activity.map.id }}",
       {{ activity.map.summary_polyline | tojson }}  // важно: tojson экранирует строку
     );
