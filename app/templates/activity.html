@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+{% block title %}Список тренировок{% endblock %}
+
+{% block content %}
+
+<div class="mb-5">
+  <button class="btn btn-outline-primary mb-1 fw-bold">
+    <i class="bi bi-arrow-clockwise me-2"></i>
+    Синхронизировать со Strava
+  </button>
+</div>
+<div id="{{ activity.id }}" class="card shadow-sm border-0 bg-light mb-5"
+  role="button"
+  data-href="{{ url_for('strava_activity.activity', athlete_id=activity.athlete.id, activity_id=activity.id) }}">
+  <div class="card-body">
+    <div class="d-flex row">
+      <div class="col-4">
+        <div id="map_{{ activity.map.id }}" class="map"></div>
+      </div>
+
+      <div class="col-8">
+        <div class="mb-4">
+          <p class="fw-bold mb-0">
+            {{ activity.athlete.name }}
+          </p>
+          <p class="d-flex small mb-0">
+            {% if activity.type == "Ride" %}
+              <i class="bi bi-bicycle me-2"></i>
+            {% else %}
+              <i class="bi bi-person-walking me-2"></i>
+            {% endif %}
+            {{ activity.start_date_local }}
+          </p>
+        </div>
+
+        <div class="">
+          <h5 class="fw-bold mb-4">
+            {{ activity.name }}
+          </h5>
+
+          <div class="d-flex row">
+
+            <div class="col-3">
+              <div class="small">
+                Время
+              </div>
+              <div class="fw-bold">
+                {{ activity.moving_time }}
+              </div>
+            </div>
+
+            <div class="col-3">
+              <div class="small">
+                Расстояние
+              </div>
+              <div class="fw-bold">
+                {{ activity.distance }}
+              </div>
+            </div>
+
+            <div class="col-3">
+              <div class="small">
+                Средняя скорость
+              </div>
+              <div class="fw-bold">
+                {{ activity.average_speed }}
+              </div>
+            </div>
+
+            <div class="col-3">
+              <div class="small">
+                Средний пульс
+              </div>
+              <div class="fw-bold">
+                {{ activity.average_heartrate }}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/render_route_map.js') }}"></script>
+<script>
+  renderRouteMap(
+    "map_{{ activity.map.id }}",
+    {{ activity.map.summary_polyline | tojson }}  // важно: tojson экранирует строку
+  );
+</script>
+
+{% endblock %}

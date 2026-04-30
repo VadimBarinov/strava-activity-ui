@@ -9,7 +9,7 @@
     Синхронизировать со Strava
   </button>
 </div>
-<script src="{{ url_for('static', filename='js/render_route_map.js') }}"></script>
+
 {% for activity in activities %}
   <div id="{{ activity.id }}" class="card shadow-sm border-0 bg-light mb-5"
     role="button"
@@ -94,6 +94,7 @@
     window.location = card.dataset.href;
   });
 </script>
+<script src="{{ url_for('static', filename='js/render_route_map.js') }}"></script>
 <script>
   {% for activity in activities %}
     renderRouteMapWithoutZoom(

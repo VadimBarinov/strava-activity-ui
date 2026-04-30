@@ -110,6 +110,6 @@ def activity(athlete_id: int, activity_id: int):
     "intensity_score": 0.57,
     "target": 2,
   }
-  return render_template("athlete_activities.html", activity=activity)
+  return render_template("activity.html", activity=activity)
 
 # возможно нужно будет добавить эндпоинт login для редиректа со strava
