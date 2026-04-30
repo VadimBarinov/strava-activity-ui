@@ -48,6 +48,7 @@
 .map {
   height: 100%;
   width: 100%;
+  border-radius: var(--bs-card-border-radius);
 }
 
 .leaflet-control-attribution {
