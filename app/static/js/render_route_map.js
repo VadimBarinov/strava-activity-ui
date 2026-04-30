@@ -21,8 +21,8 @@ function renderRouteMap(containerId, encodedPolyline, options = {}) {
 
   // Создаём карту
   const map = L.map(containerId, {
-    // zoomControl: true,
-    // attributionControl: true
+    zoomControl: true,
+    attributionControl: true
   });
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

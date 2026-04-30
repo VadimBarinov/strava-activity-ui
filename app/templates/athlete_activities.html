@@ -18,12 +18,6 @@
       <div class="d-flex row">
         <div class="col-4">
           <div id="map_{{ activity.map.id }}" class="map"></div>
-          <script>
-            renderRouteMap(
-              "map_{{ activity.map.id }}",
-              {{ activity.map.summary_polyline | tojson }}
-            );
-          </script>
         </div>
 
         <div class="col-8">
@@ -99,6 +93,14 @@
     if (!card) return;
     window.location = card.dataset.href;
   });
+</script>
+<script>
+  {% for activity in activities %}
+    renderRouteMap(
+      "map_{{ activity.map.id }}",
+      {{ activity.map.summary_polyline | tojson }}  // важно: tojson экранирует строку
+    );
+  {% endfor %}
 </script>
 
 {% endblock %}
