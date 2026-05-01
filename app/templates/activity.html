@@ -3,78 +3,169 @@
 
 {% block content %}
 
-<div id="map" class="map map-in-activity-page mb-5"></div>
+<div id="map" class="map map-in-activity-page mb-3"></div>
 
-<div id="{{ activity.id }}" class="card shadow-sm border-0 bg-light mb-5"
-  role="button"
-  data-href="{{ url_for('strava_activity.activity', athlete_id=activity.athlete.id, activity_id=activity.id) }}">
-  <div class="card-body">
-    <div class="d-flex row">
+<div class="d-flex row">
 
-      <div class="col-8">
-        <div class="mb-4">
-          <p class="fw-bold mb-0">
-            {{ activity.athlete.name }}
-          </p>
-          <p class="d-flex small mb-0">
-            {% if activity.type == "Ride" %}
-              <i class="bi bi-bicycle me-2"></i>
-            {% else %}
-              <i class="bi bi-person-walking me-2"></i>
-            {% endif %}
-            {{ activity.start_date_local }}
-          </p>
-        </div>
+  <div class="col-md-6 mt-3">
+    <h5 class="fw-bold mb-0">
+      {{ activity.athlete.name }}
+    </h5>
+    <p class="d-flex mb-0">
+      {% if activity.type == "Ride" %}
+        <i class="bi bi-bicycle me-2"></i>
+      {% else %}
+        <i class="bi bi-person-walking me-2"></i>
+      {% endif %}
+      {{ activity.start_date_local }}
+    </p>
+  </div>
 
-        <div class="">
-          <h5 class="fw-bold mb-4">
-            {{ activity.name }}
-          </h5>
+  <div class="col-md-6 mt-3">
+    <h5 class="fw-bold">
+      {{ activity.name }}
+    </h5>
+  </div>
 
-          <div class="d-flex row">
+  <div class="col-md-6 mt-3">
 
-            <div class="col-3">
-              <div class="small">
-                Время
-              </div>
-              <div class="fw-bold">
-                {{ activity.moving_time }}
-              </div>
-            </div>
+  </div>
 
-            <div class="col-3">
-              <div class="small">
-                Расстояние
-              </div>
-              <div class="fw-bold">
-                {{ activity.distance }}
-              </div>
-            </div>
+  <div class="col-md-6 mt-3">
+    <div class="card shadow-sm border-0 bg-light">
+      <div class="card-body">
+        <h5 class="fw-bold mb-4">
+          <i class="bi bi-clipboard-data text-primary"></i>
+          Статистика
+        </h5>
+        <div class="d-flex row">
 
-            <div class="col-3">
-              <div class="small">
-                Средняя скорость
-              </div>
-              <div class="fw-bold">
-                {{ activity.average_speed }}
-              </div>
-            </div>
-
-            <div class="col-3">
-              <div class="small">
-                Средний пульс
-              </div>
-              <div class="fw-bold">
-                {{ activity.average_heartrate }}
+          <div class="col-6">
+            <div class="card shadow-sm border-0 bg-light">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="me-4">
+                    <h1 class="bi bi-stopwatch text-primary mb-0"></h1>
+                  </div>
+                  <div>
+                    <p class="mb-1">
+                      Время
+                    </p>
+                    <h5 class="fw-bold">
+                      {{ activity.moving_time }}
+                    </h5>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
 
+          <div class="col-6">
+            <div class="card shadow-sm border-0 bg-light">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="me-4">
+                    <h1 class="bi bi-cursor text-primary mb-0"></h1>
+                  </div>
+                  <div>
+                    <p class="mb-1">
+                      Расстояние
+                    </p>
+                    <h5 class="fw-bold">
+                      {{ activity.distance }}
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 mt-3">
+            <div class="card shadow-sm border-0 bg-light">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="me-4">
+                    <h1 class="bi bi-speedometer text-primary mb-0"></h1>
+                  </div>
+                  <div>
+                    <p class="mb-1">
+                      Ср. скорость
+                    </p>
+                    <h5 class="fw-bold">
+                      {{ activity.average_speed }}
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 mt-3">
+            <div class="card shadow-sm border-0 bg-light">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="me-4">
+                    <h1 class="bi bi-graph-up-arrow text-primary mb-0"></h1>
+                  </div>
+                  <div>
+                    <p class="mb-1">
+                      Набор высоты
+                    </p>
+                    <h5 class="fw-bold">
+                      {{ activity.total_elevation_gain }}
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 mt-3">
+            <div class="card shadow-sm border-0 bg-light">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="me-4">
+                    <h1 class="bi bi-activity text-primary mb-0"></h1>
+                  </div>
+                  <div>
+                    <p class="mb-1">
+                      Ср. пульс
+                    </p>
+                    <h5 class="fw-bold">
+                      {{ activity.average_heartrate }}
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 mt-3">
+            <div class="card shadow-sm border-0 bg-light">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="me-4">
+                    <h1 class="bi bi-activity text-primary mb-0"></h1>
+                  </div>
+                  <div>
+                    <p class="mb-1">
+                      Макс. пульс
+                    </p>
+                    <h5 class="fw-bold">
+                      {{ activity.max_heartrate }}
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
+
       </div>
     </div>
   </div>
+
 </div>
 
 <script src="{{ url_for('static', filename='js/render_route_map.js') }}"></script>
