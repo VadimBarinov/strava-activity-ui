@@ -58,3 +58,72 @@
 .leaflet-control-attribution {
   display: none;
 }
+
+.choose-container{
+  position: relative;
+  height: 22rem;
+}
+
+.meter-container{
+  position: relative;
+  width: 22rem;
+}
+
+.meter{
+  position: relative;
+  height: 11rem;
+  width: 100%;
+  overflow: hidden;
+}
+
+.outer-circle{
+  position: relative;
+  height: 22rem;
+  width: 100%;
+  border-radius: 50% 50% 0 0;
+  background-image: linear-gradient(to right,
+                  #33FF00,
+                  #C3FF00,
+                  #FFD400,
+                  #FF5D00,
+                  #FF0000);
+}
+.inner-circle{
+  height: 65%;
+  width: 65%;
+  border-radius: 50% 50% 0 0;
+}
+
+.needle{
+  position: relative;
+  top: calc(42%);
+  left: 50%;
+  transform: translate(-50%,-50%);
+  height: 14%;
+  width: 14%;
+  background-color: #bbb;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  transform: translate(-50%, -50%) rotate(-100deg);
+}
+
+.needle::before{
+  content: "";
+  position: relative;
+  top: -130%;
+  width: 70%;
+  height: 300%;
+  background-color: #bbb;
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+  border-radius: 0 0 1rem 1rem;
+}
+
+.needle::after{
+  content: "";
+  position: absolute;
+  height: 50%;
+  width: 50%;
+  background-color: #6d6d6d;
+  border-radius: 50%;
+  border: 0.2rem solid #f1f1f1;
+}
