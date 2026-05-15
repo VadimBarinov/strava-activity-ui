@@ -33,6 +33,9 @@ class StravaAPI:
         username=token_json["athlete"]["username"],
       )
     )
+    
+  def fetch_user_data(self, ):
+    pass
   
   def fetch_activities(self, ):
     pass
