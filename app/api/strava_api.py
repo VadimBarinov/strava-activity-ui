@@ -19,8 +19,7 @@ class StravaAPI:
   def __init__(self, url=config.StravaConfig.api_base):
     self.url = url
     
-  def generate_jwt(self, code, token_url=config.StravaConfig.token_url):
-    data = StravaMapper().token_url_data(code)
+  def generate_jwt(self, data, token_url=config.StravaConfig.token_url):
     resp = httpx.post(token_url, data=data)
     resp.raise_for_status()
     token_json = resp.json()
@@ -34,8 +33,13 @@ class StravaAPI:
       )
     )
     
-  def refresh_jwt(self, ):
-    pass
+  def generate_access(self, code, token_url=config.StravaConfig.token_url):
+    data = StravaMapper().token_url_data_for_authorization(code, token_url)
+    return self.generate_jwt(data)
+    
+  def refresh_access_token(self, code, token_url=config.StravaConfig.token_url):
+    data = StravaMapper().token_url_data_for_refresh(code, token_url)
+    return self.generate_jwt(data)
     
   def fetch_user_data(self, ):
     pass
@@ -62,10 +66,17 @@ class StravaMapper:
                 scope=config.StravaConfig.scope):
     return f"{url}?{urlencode(self.login_url_params(redirect_uri, scope))}"
   
-  def token_url_data(self, code, client_secret=config.StravaConfig.client_secret):
+  def token_url_data(self, code, grand_type, client_secret=config.StravaConfig.client_secret):
     return {
       "client_id": self.client_id,
       "client_secret": client_secret,
       "code": code,
-      "grant_type": "authorization_code",
+      "grant_type": grand_type,
     }
+    
+  def token_url_data_for_authorization(self, code, client_secret=config.StravaConfig.client_secret):
+    return self.token_url_data(code, "authorization_code", client_secret=client_secret)
+    
+  def token_url_data_for_refresh(self, code, client_secret=config.StravaConfig.client_secret):
+    return self.token_url_data(code, "refresh_token", client_secret=client_secret)
+    
