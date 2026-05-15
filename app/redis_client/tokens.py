@@ -14,7 +14,7 @@ class TokenRedisClient:
     access_token = self.connection.get(self._key(key))
     return access_token
   
-  def set(self, token, key, ttl=300):
+  def set(self, token, key, ttl=3600):
     obj = {
       "access_token": token.access_token,
       "refresh_token": token.refresh_token,
