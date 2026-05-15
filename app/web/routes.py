@@ -1,6 +1,8 @@
-from flask import render_template
+from flask import render_template, redirect, request, session
 from datetime import datetime, timedelta
+from urllib.parse import urlencode
 from . import bp
+import config
 
 def convert_date(iso_date: str):
   dt = datetime.fromisoformat(iso_date.replace("Z", "+00:00"))
@@ -64,6 +66,46 @@ activities = [
     "target": 1,
   }
 ]
+
+@bp.route("/login/strava", methods=["GET"])
+def login_strava():
+  params = {
+    "client_id": config.StravaConfig.client_id,
+    "redirect_uri": config.StravaConfig.redirect_uri,
+    "response_type": "code",
+    "approval_prompt": "auto",
+    "scope": config.StravaConfig.scope,
+  }
+  return f"{config.StravaConfig.auth_url}?{urlencode(params)}"
+
+
+@bp.route("/strava/callback", methods=["GET"])
+def strava_callback():
+  error = request.args.get("error")
+  if error:
+    return f"Strava error: {error}", 400
+
+  code = request.args.get("code")
+  if not code:
+    return "No code returned", 400
+
+  data = {
+    "client_id": STRAVA_CLIENT_ID,
+    "client_secret": STRAVA_CLIENT_SECRET,
+    "code": code,
+    "grant_type": "authorization_code",
+  }
+  token_resp = requests.post(STRAVA_TOKEN_URL, data=data, timeout=15)
+  token_resp.raise_for_status()
+  token_json = token_resp.json()
+
+  # В ответе обычно: access_token, refresh_token, expires_at, athlete
+  session["strava_access_token"] = token_json["access_token"]
+  session["strava_refresh_token"] = token_json.get("refresh_token")
+  session["strava_expires_at"] = token_json.get("expires_at")
+  session["strava_athlete"] = token_json.get("athlete")
+
+  return redirect(url_for("profile"))
 
 @bp.route("/", methods=["GET"])
 def index():
