@@ -34,6 +34,9 @@ class StravaAPI:
       )
     )
     
+  def refresh_jwt(self, ):
+    pass
+    
   def fetch_user_data(self, ):
     pass
   
