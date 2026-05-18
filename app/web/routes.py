@@ -18,22 +18,24 @@ def strava_callback():
   if not code:
     return "No code returned", 400
   athlete = StravaLoginUser().login_and_get_data(code)
-  return redirect(url_for("athlete_activities", athlete.id))
+  return redirect(url_for("strava_activity.athlete_activities", athlete.id))
 
 @bp.route("/", methods=["GET"])
 def index():
   if current_user:
-    redirect(url_for("athlete_activities", current_user.id))
+    redirect(url_for("strava_activity.athlete_activities"))
   return render_template("index.html")
 
-@bp.route("/<athlete_id>", methods=["GET"])
-@login_required_with_token
-def athlete_activities(athlete_id: int):
-  activities = StravaFetchAllActivities().call(athlete_id)
+@bp.route("/activities_list", methods=["GET"])
+# @login_required_with_token
+def athlete_activities():
+  # activities = StravaFetchAllActivities().call(current_user.id)
+  activities = StravaFetchAllActivities().call(None)
   return render_template("athlete_activities.html", activities=activities)
 
-@bp.route("/<athlete_id>/activity/<activity_id>", methods=["GET"])
-@login_required_with_token
-def activity(athlete_id: int, activity_id: int):
-  activity = StravaFetchOneActivity().call(athlete_id, activity_id)
+@bp.route("/activity/<activity_id>", methods=["GET"])
+# @login_required_with_token
+def activity(activity_id: int):
+  # activity = StravaFetchOneActivity().call(current_user.id, activity_id)
+  activity = StravaFetchOneActivity().call(None, activity_id)
   return render_template("activity.html", activity=activity)

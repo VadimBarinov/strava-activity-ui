@@ -22,6 +22,7 @@ class Settings(BaseSettings):
   flask_app: str
   secret_key: str
   redis_url: str
+  strava: StravaConfig
   routes: RoutesConfig = RoutesConfig()
   model_config = SettingsConfigDict(
     env_file=(BASE_DIR / ".env"),

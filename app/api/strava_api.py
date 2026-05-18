@@ -1,13 +1,13 @@
 from urllib.parse import urlencode
 import httpx
-import config
+from config import settings
 from app.domain.dtos import AthleteDto, TokenDto, ActivityDto
 
 class StravaAPI:
-  def __init__(self, url=config.StravaConfig.api_base):
+  def __init__(self, url=settings.strava.api_base):
     self.url = url
     
-  def generate_jwt(self, payload, token_url=config.StravaConfig.token_url):
+  def generate_jwt(self, payload, token_url=settings.strava.token_url):
     resp = httpx.post(
       token_url,
       json=payload,
@@ -27,11 +27,11 @@ class StravaAPI:
       )
     )
     
-  def generate_access(self, code, token_url=config.StravaConfig.token_url):
+  def generate_access(self, code, token_url=settings.strava.token_url):
     payload = StravaMapper().token_url_payload_for_authorization(code, token_url)
     return self.generate_jwt(payload)
     
-  def refresh_access_token(self, code, token_url=config.StravaConfig.token_url):
+  def refresh_access_token(self, code, token_url=settings.strava.token_url):
     payload = StravaMapper().token_url_payload_for_refresh(code, token_url)
     return self.generate_jwt(payload)
   
@@ -73,11 +73,11 @@ class StravaAPI:
     return ActivityDto(...)
   
 class StravaMapper:
-  def __init__(self, client_id=config.StravaConfig.client_id):
+  def __init__(self, client_id=settings.strava.client_id):
     self.client_id = client_id
   
-  def login_url_params(self, redirect_uri=config.StravaConfig.redirect_uri, 
-                scope=config.StravaConfig.scope):
+  def login_url_params(self, redirect_uri=settings.strava.redirect_uri, 
+                scope=settings.strava.scope):
     return {
       "client_id": self.client_id,
       "redirect_uri": redirect_uri,
@@ -86,12 +86,12 @@ class StravaMapper:
       "scope": scope,
     }
   
-  def login_url(self, url=config.StravaConfig.auth_url, 
-                redirect_uri=config.StravaConfig.redirect_uri, 
-                scope=config.StravaConfig.scope):
+  def login_url(self, url=settings.strava.auth_url, 
+                redirect_uri=settings.strava.redirect_uri, 
+                scope=settings.strava.scope):
     return f"{url}?{urlencode(self.login_url_params(redirect_uri, scope))}"
   
-  def token_url_payload(self, code, grand_type, client_secret=config.StravaConfig.client_secret):
+  def token_url_payload(self, code, grand_type, client_secret=settings.strava.client_secret):
     return {
       "client_id": self.client_id,
       "client_secret": client_secret,
@@ -99,9 +99,9 @@ class StravaMapper:
       "grant_type": grand_type,
     }
     
-  def token_url_payload_for_authorization(self, code, client_secret=config.StravaConfig.client_secret):
+  def token_url_payload_for_authorization(self, code, client_secret=settings.strava.client_secret):
     return self.token_url_payload(code, "authorization_code", client_secret=client_secret)
     
-  def token_url_payload_for_refresh(self, code, client_secret=config.StravaConfig.client_secret):
+  def token_url_payload_for_refresh(self, code, client_secret=settings.strava.client_secret):
     return self.token_url_payload(code, "refresh_token", client_secret=client_secret)
     
