@@ -49,6 +49,6 @@ end
 
 Orchestrator <-- StravaLoginUser -- : athlete \nПолучение авторизованного пользователя
 Web <-- Orchestrator : athlete_activities()
-Client <-- Web : Отображение списка тренировок конкретного пользователя
+Client <-- Web : Отображение списка тренировок
 
 @enduml
