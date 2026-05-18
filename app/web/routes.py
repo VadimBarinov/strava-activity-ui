@@ -1,139 +1,39 @@
-from flask import render_template, redirect, request, session
-from datetime import datetime, timedelta
-from urllib.parse import urlencode
+from flask import render_template, redirect, request, url_for
+from flask_login import current_user
+from app.use_cases.strava_auth import StravaLoginUrlGetter, StravaLoginUser
+from app.use_cases.strava_activities import StravaFetchAllActivities, StravaFetchOneActivity
+from .decorators import login_required_with_token
 from . import bp
-import config
-
-def convert_date(iso_date: str):
-  dt = datetime.fromisoformat(iso_date.replace("Z", "+00:00"))
-  return dt.strftime("%d %B %Y г. в %H:%M")
-
-def convert_distance(distance_in_metres):
-  return distance_in_metres / 1000
-
-def convert_moving_time(seconds):
-  delta = timedelta(seconds=seconds)
-  return str(delta)
-
-def convert_speed(speed):
-  return speed * 3.6
-
-activities = [
-  {
-    "athlete": { # поменяется на user и будет отдельной сущностью в бд
-      "id": 123,
-      "name": "Вадим Баринов", # в api такого нет, нужно будет при синхронизации обновлять данные пользователя в бд
-    },
-    "id": 1,
-    "name": "Тренировка (после обеда)",
-    "start_date_local": convert_date("2025-09-22T17:54:39Z"),
-    "type": "Ride", # будет отдельной сущностью в бд
-    "distance":convert_distance(3000),
-    "moving_time": convert_moving_time(100),
-    "average_speed": convert_speed(6.7), 
-    "total_elevation_gain": 300, 
-    "average_heartrate": 140,
-    "max_heartrate" : 178,
-    "map": { # будет отдельной сущностью в бд
-      "id": "456",
-      "summary_polyline": "i{wjI{xhfHHWPM~@CZFZd@Pd@Jj@APsClDiDvCu@x@[n@UjAu@dAYjAe@r@Ql@?PTp@Lv@vAnFBLANe@AkA_@mAQUDyC|Di@l@iB`CKTCV?fAGvBQnD_@bFGZMb@KN_@VWXk@\\u@FcAAi@^u@IKBKHK\\m@pCe@zAa@|@oAhBc@|@Or@]xCS~@s@xB{AxCm@dDmAdDOVi@l@sBlBwCvCoA~Ay@h@QPUj@SjBQp@wFxJQNe@LaABKHCP?rAEz@DpAMl@g@~@K^CXBvAAl@IlBOfBEfBGj@O|@mAbFUn@cA~A[`A_AjFOhBI`@BB{@~AUnAYr@CVFp@CL_B`CqBnBiApBgD|AkAz@QTI^Kp@BlAIbFKr@OXcCdCsAv@y@j@y@fAa@dAW\\eAr@aA`@g@j@aAr@n@a@z@aAz@e@nA}@PYX_AJQfBaBjAo@|@iArAoAJYF_@N{ABgBIkBP{AFDFNEOxAgA`@g@`Bc@f@URY`@aAPQh@{@zA_B|@}ADWCe@@]Vs@LgAbAiBNk@NwBJy@TmANuAn@aBn@m@f@y@`@aBn@iDN{AR_DJiD?oBLg@d@_ANs@CiA@u@CkABa@NKzACLEPQnByDjAmB\\a@Vo@L[He@VeCPc@x@a@dA{@xAcBhA_A`@g@n@k@^Yn@{@b@u@n@eBj@yBHECA@MLu@\\s@`@mAv@kBf@}BVcCLm@f@eArAaB\\o@j@aBr@gDL[HIJAx@ZP@FGHc@FI~@@l@Ix@i@P[d@a@Zo@EJFm@VmFLsADcCL}BH]`BgCxBaCvAkBNAp@HdBf@n@@wAgFk@_CC_@DSJYh@w@ZgAr@{@RqAVk@PWtEcFvCmClJsJdA_Ar@w@J[Hw@Ao@WkAo@sAa@oAEWBK\\a@Fi@f@o@n@o@HAPHNGhAqAlBkB|AyBt@q@bBkBvAcAd@m@zBwBh@o@rCmCj@YBISYEUGgAFY`@{@p@eAd@gAVa@TOjAUZMPWB][dAQLy@XkA|@qAzBYt@Gd@@bADLLR?Pe@JmHxHcEvD_BbB_AjAoExEQJk@AYXo@~@Ox@[b@APT~@t@xAf@nB?RCVIh@KTqI~ImBfBMBMEIQKe@MQ[_AIIMDSXCJ?LTx@FDEaBdCeAB@TY?c@E^",
-      "resource_state": 2
-    },
-    "intensity_score": 0.57,
-    "target": 2,
-  },
-  {
-    "athlete": {
-      "id": 123,
-      "name": "Вадим Баринов",
-    },
-    "id": 2,
-    "name": "Тренировка (после обеда)",
-    "start_date_local": convert_date("2025-09-22T17:54:39Z"),
-    "type": "Run",
-    "distance":convert_distance(3000),
-    "moving_time": convert_moving_time(100),
-    "average_speed": convert_speed(6.7), 
-    "total_elevation_gain": 300, 
-    "average_heartrate": 140,
-    "max_heartrate" : 178,
-    "map": {
-      "id": "123",
-      "summary_polyline": "i{wjI{xhfHHWPM~@CZFZd@Pd@Jj@APsClDiDvCu@x@[n@UjAu@dAYjAe@r@Ql@?PTp@Lv@vAnFBLANe@AkA_@mAQUDyC|Di@l@iB`CKTCV?fAGvBQnD_@bFGZMb@KN_@VWXk@\\u@FcAAi@^u@IKBKHK\\m@pCe@zAa@|@oAhBc@|@Or@]xCS~@s@xB{AxCm@dDmAdDOVi@l@sBlBwCvCoA~Ay@h@QPUj@SjBQp@wFxJQNe@LaABKHCP?rAEz@DpAMl@g@~@K^CXBvAAl@IlBOfBEfBGj@O|@mAbFUn@cA~A[`A_AjFOhBI`@BB{@~AUnAYr@CVFp@CL_B`CqBnBiApBgD|AkAz@QTI^Kp@BlAIbFKr@OXcCdCsAv@y@j@y@fAa@dAW\\eAr@aA`@g@j@aAr@n@a@z@aAz@e@nA}@PYX_AJQfBaBjAo@|@iArAoAJYF_@N{ABgBIkBP{AFDFNEOxAgA`@g@`Bc@f@URY`@aAPQh@{@zA_B|@}ADWCe@@]Vs@LgAbAiBNk@NwBJy@TmANuAn@aBn@m@f@y@`@aBn@iDN{AR_DJiD?oBLg@d@_ANs@CiA@u@CkABa@NKzACLEPQnByDjAmB\\a@Vo@L[He@VeCPc@x@a@dA{@xAcBhA_A`@g@n@k@^Yn@{@b@u@n@eBj@yBHECA@MLu@\\s@`@mAv@kBf@}BVcCLm@f@eArAaB\\o@j@aBr@gDL[HIJAx@ZP@FGHc@FI~@@l@Ix@i@P[d@a@Zo@EJFm@VmFLsADcCL}BH]`BgCxBaCvAkBNAp@HdBf@n@@wAgFk@_CC_@DSJYh@w@ZgAr@{@RqAVk@PWtEcFvCmClJsJdA_Ar@w@J[Hw@Ao@WkAo@sAa@oAEWBK\\a@Fi@f@o@n@o@HAPHNGhAqAlBkB|AyBt@q@bBkBvAcAd@m@zBwBh@o@rCmCj@YBISYEUGgAFY`@{@p@eAd@gAVa@TOjAUZMPWB][dAQLy@XkA|@qAzBYt@Gd@@bADLLR?Pe@JmHxHcEvD_BbB_AjAoExEQJk@AYXo@~@Ox@[b@APT~@t@xAf@nB?RCVIh@KTqI~ImBfBMBMEIQKe@MQ[_AIIMDSXCJ?LTx@FDEaBdCeAB@TY?c@E^",
-      "resource_state": 2
-    },
-    "intensity_score": 0.77,
-    "target": 1,
-  }
-]
 
 @bp.route("/login/strava", methods=["GET"])
 def login_strava():
-  params = {
-    "client_id": config.StravaConfig.client_id,
-    "redirect_uri": config.StravaConfig.redirect_uri,
-    "response_type": "code",
-    "approval_prompt": "auto",
-    "scope": config.StravaConfig.scope,
-  }
-  return f"{config.StravaConfig.auth_url}?{urlencode(params)}"
-
+  return redirect(StravaLoginUrlGetter().call())
 
 @bp.route("/strava/callback", methods=["GET"])
 def strava_callback():
   error = request.args.get("error")
   if error:
     return f"Strava error: {error}", 400
-
   code = request.args.get("code")
   if not code:
     return "No code returned", 400
-
-  data = {
-    "client_id": STRAVA_CLIENT_ID,
-    "client_secret": STRAVA_CLIENT_SECRET,
-    "code": code,
-    "grant_type": "authorization_code",
-  }
-  token_resp = requests.post(STRAVA_TOKEN_URL, data=data, timeout=15)
-  token_resp.raise_for_status()
-  token_json = token_resp.json()
-
-  # В ответе обычно: access_token, refresh_token, expires_at, athlete
-  session["strava_access_token"] = token_json["access_token"]
-  session["strava_refresh_token"] = token_json.get("refresh_token")
-  session["strava_expires_at"] = token_json.get("expires_at")
-  session["strava_athlete"] = token_json.get("athlete")
-
-  return redirect(url_for("profile"))
+  athlete = StravaLoginUser().login_and_get_data(code)
+  return redirect(url_for("athlete_activities", athlete.id))
 
 @bp.route("/", methods=["GET"])
 def index():
-  # добавить проверку авторизации
-  # если пользователь авторизован, то редирект на страницу со списком
+  if current_user:
+    redirect(url_for("athlete_activities", current_user.id))
   return render_template("index.html")
 
 @bp.route("/<athlete_id>", methods=["GET"])
+@login_required_with_token
 def athlete_activities(athlete_id: int):
-  # добавить проверку
-  # только пользователь с таким id может перейти к своим тренировкам
-  
-  # получать тренировки из базы
-  
-  # еще на странице должна быть кнопка синхронизации (тянет данные со strava api и подсчитывает target)
-  # это будет асинхронная джоба
-  # так же ее запускать при каждом заходе на страницу (не забываем про ограничения по запросам в strava api)
+  activities = StravaFetchAllActivities().call(athlete_id)
   return render_template("athlete_activities.html", activities=activities)
 
 @bp.route("/<athlete_id>/activity/<activity_id>", methods=["GET"])
+@login_required_with_token
 def activity(athlete_id: int, activity_id: int):
-  # добавить проверку(сделать декоратор)
-  # только пользователь с таким id может перейти к своим тренировкам
-  
-  # получать данные из базы по конкретной тренировке 
-  activity = [a for a in activities if str(a["id"]) == str(activity_id)].pop()
+  activity = StravaFetchOneActivity().call(athlete_id, activity_id)
   return render_template("activity.html", activity=activity)
-
-
-
-# возможно нужно будет добавить эндпоинт login для редиректа со strava
