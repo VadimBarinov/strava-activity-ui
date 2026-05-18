@@ -73,15 +73,25 @@ class StravaFetchAllActivities:
     
     # получать тренировки из базы
     
-    # отправляет запрос в strava на получение тренировок
-      # туда отправляем промедуток времени (время последней тренировки в бд, текущее время)
-      # все новые тренировки добавляем в бд
+    StravaSyncLastActivities().call()
     
     # еще на странице должна быть кнопка синхронизации (тянет данные со strava api и подсчитывает target)
     # это будет асинхронная джоба
     # так же ее запускать при каждом заходе на страницу (не забываем про ограничения по запросам в strava api)
     return activities
-
+  
+class StravaSyncLastActivities:
+  def call(self):
+    # отправляет запрос в strava на получение тренировок
+      # туда отправляем промедуток времени (время последней тренировки в бд, текущее время)
+      # все новые тренировки добавляем в бд
+    self.predict_types()
+    
+  def predict_types(self):
+    # отправляет запрос на api для классификации
+    # обновляет записи в бд (добавляет target и intensity_score)
+    pass
+  
 class StravaFetchOneActivity:
   def __init__(self, strava_api_cls=StravaAPI):
     self.strava_api_cls = strava_api_cls
