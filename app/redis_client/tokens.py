@@ -11,8 +11,8 @@ class TokenRedisClient:
     return f"{self.prefix}{key}"
   
   def get(self, key):
-    access_token = self.connection.get(self._key(key))
-    return access_token
+    token_set = self.connection.get(self._key(key))
+    return token_set
   
   def set(self, token, key, ttl=3600):
     obj = {

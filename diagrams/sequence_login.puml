@@ -1,0 +1,54 @@
+@startuml
+
+title Авторизация пользователя
+
+actor Client
+participant Web
+participant Orchestrator
+participant StravaLoginUrlGetter
+participant StravaLoginUser
+participant StravaMapper
+participant StravaAPI
+participant TokensRedisClient
+participant UsersRepository
+database Redis
+database DB 
+
+Client -> Web : Нажимает на кнопку войти
+Web -> Orchestrator : login_strava()
+
+Orchestrator -> StravaLoginUrlGetter ++ #SkyBlue : call()
+StravaLoginUrlGetter -> StravaMapper ++ #SkyBlue : login_url()
+StravaLoginUrlGetter <-- StravaMapper -- : Формируется ссылка на авторизацию \nчерез Strava
+Orchestrator <-- StravaLoginUrlGetter --
+
+Orchestrator -> StravaAPI : Редирект на сформированный url
+Orchestrator <-- StravaAPI : strava_callback() \nРедирект на указанный url
+
+Orchestrator -> StravaLoginUser ++ #SkyBlue : login_and_get_data(code)
+StravaLoginUser -> StravaAPI ++ #SkyBlue : generate_access(code)
+StravaAPI -> StravaMapper ++ #SkyBlue : token_url_payload_for_authorization(code, token_url)
+StravaAPI <-- StravaMapper -- : payload
+StravaLoginUser <-- StravaAPI : token_set
+
+StravaLoginUser -> TokensRedisClient ++ #SkyBlue : set(token_set, athlete_id)
+deactivate TokensRedisClient
+TokensRedisClient -> Redis
+StravaLoginUser -> StravaAPI : fetch_user_data(access_token)
+StravaLoginUser <-- StravaAPI -- : athlete
+StravaLoginUser -> UsersRepository ++ #SkyBlue : fetch_by_id(athlete_id)
+UsersRepository -> DB
+UsersRepository <-- DB
+StravaLoginUser <-- UsersRepository : current_athelete | None
+
+opt Если пользователя нет в базе
+    StravaLoginUser -> UsersRepository : save(current_athelete)
+    UsersRepository -> DB
+    deactivate UsersRepository
+end
+
+Orchestrator <-- StravaLoginUser -- : athlete \nПолучение авторизованного пользователя
+Web <-- Orchestrator : athlete_activities()
+Client <-- Web : Отображение списка тренировок конкретного пользователя
+
+@enduml

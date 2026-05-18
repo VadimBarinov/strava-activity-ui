@@ -58,7 +58,7 @@ class StravaAPI:
       lastname=resp["lastname"],
     )
   
-  def fetch_activities(self, ):
+  def fetch_activities(self, access_token, before, after):
     # нужно дописать
     endpoint_url = ...
     resp = httpx.post(
