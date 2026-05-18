@@ -26,7 +26,7 @@ def index():
     redirect(url_for("strava_activity.athlete_activities"))
   return render_template("index.html")
 
-@bp.route("/activities_list", methods=["GET"])
+@bp.route("/activities-list", methods=["GET"])
 # @login_required_with_token
 def athlete_activities():
   # activities = StravaFetchAllActivities().call(current_user.id)
