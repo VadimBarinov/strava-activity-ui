@@ -98,7 +98,7 @@
                         Интенсивность
                       </p>
                       <h5 class="fw-bold mb-0">
-                        {{ activity.intensity_score }}
+                        {{ activity.intensity_score | round(2) }}
                       </h5>
                     </div>
                   </div>
@@ -155,7 +155,7 @@
                       Расстояние
                     </p>
                     <h5 class="fw-bold mb-0">
-                      {{ activity.distance }}
+                      {{ activity.distance | round(2) }}
                     </h5>
                   </div>
                 </div>
@@ -175,7 +175,7 @@
                       Ср. скорость
                     </p>
                     <h5 class="fw-bold mb-0">
-                      {{ activity.average_speed }}
+                      {{ activity.average_speed | round(2) }}
                     </h5>
                   </div>
                 </div>
@@ -195,7 +195,7 @@
                       Набор высоты
                     </p>
                     <h5 class="fw-bold mb-0">
-                      {{ activity.total_elevation_gain }}
+                      {{ activity.total_elevation_gain | round(2) }}
                     </h5>
                   </div>
                 </div>

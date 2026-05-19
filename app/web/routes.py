@@ -32,13 +32,15 @@ def index():
   return render_template("index.html")
 
 @bp.route("/activities-list", methods=["GET"])
-@login_required_with_token
+# @login_required_with_token
 def athlete_activities():
-  activities = StravaFetchAllActivities().call(current_user.id)
+  # activities = StravaFetchAllActivities().call(current_user.id)
+  activities = StravaFetchAllActivities().call(None)
   return render_template("athlete_activities.html", activities=activities)
 
 @bp.route("/activity/<activity_id>", methods=["GET"])
-@login_required_with_token
+# @login_required_with_token
 def activity(activity_id: int):
-  activity = StravaFetchOneActivity().call(current_user.id, activity_id)
+  # activity = StravaFetchOneActivity().call(current_user.id, activity_id)
+  activity = StravaFetchOneActivity().call(None, activity_id)
   return render_template("activity.html", activity=activity)
