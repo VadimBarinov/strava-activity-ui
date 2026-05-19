@@ -20,6 +20,8 @@ class TokenRedisClient:
       athlete=AthleteDto(
         id=obj["athlete_id"],
         username=obj["athlete_username"],
+        firstname=obj["athlete_firstname"],
+        lastname=obj["athlete_lastname"],
       )
     )
     return token_set
@@ -31,5 +33,7 @@ class TokenRedisClient:
       "expires_at": int(token.expires_at),
       "athlete_id": token.athlete.id,
       "athlete_username": token.athlete.username,
+      "athlete_firstname": token.athlete.firstname,
+      "athlete_lastname": token.athlete.lastname,
     }
     self.connection.set(self._key(key), obj)
