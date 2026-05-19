@@ -16,7 +16,6 @@ class StravaAPI:
     )
     resp.raise_for_status()
     token_json = resp.json()
-    print(token_json)
     return TokenDto(
       access_token=token_json["access_token"],
       refresh_token=token_json["refresh_token"],
@@ -30,7 +29,6 @@ class StravaAPI:
     )
     
   def generate_access(self, code, token_url=settings.strava.token_url):
-    print(code)
     payload = StravaMapper().token_url_payload_for_authorization(code)
     return self.generate_jwt(payload, token_url)
     
@@ -54,7 +52,6 @@ class StravaAPI:
     )
     resp.raise_for_status()
     resp = resp.json()
-    print(resp)
     return ActivityDto(...)
   
 class StravaMapper:
