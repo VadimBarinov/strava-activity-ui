@@ -109,6 +109,75 @@ activities = [
     "intensity_score": 0.533,
     "target": 1,
   },
+  {
+    "athlete": {
+      "id": 123,
+      "name": "Вадим Баринов",
+    },
+    "name": "Тренировка (после обеда)",
+    "distance": convert_distance(21788.2),
+    "moving_time": convert_moving_time(4019),
+    "total_elevation_gain": 251.1,
+    "type": "Ride",
+    "id": 15910746494,
+    "start_date_local": convert_date("2025-08-21T13:53:09Z"),
+    "map": {
+        "id": "a15910746494",
+        "summary_polyline": "swniIyoifHLa@KaAiBaHqBmFo@eC_@KaAv@g@bAaAz@}J|EATZbD^pBTnDd@hC?`@STqDnA}ArAgCxAOXAV`@bAj@AzB_B`GiCVAL^ZfCtAzNh@xBpAdA|FnJ~GxJv@h@fEbArCCnD_A|@i@nBsBt@g@`Ee@vBuCj@WZZhDfInAlBTfABSW}@@eAj@uFzB}Jj@cBx@yA|AmBpAiAlCiDb@ObAT^YB[Oq@}MqXcBwCc@c@cDiFkIuN}DkFq@cBmA{Dd@qBz@{EdAmC`Da@`A]vD{B`DmAz@y@Do@QgA_H{SiBmGIu@vBqDjFqHdCwCxE{Gl@gBHiASoBi@mBE?@RTTh@zCIlBm@pB[n@gNvQqDrFOb@Ff@lKx\\Np@?r@c@h@gJdEuFxAYj@i@jByAfIhAbEb@bArAhB`CbCf@fAzCrEfAdCvDvF|@fBzIjOpF`MJh@A\\_@^w@Si@{B_BuCcGkLwDiFoAuBcBsA{DkHeA{CWg@uAwAi@UmBvJ{AnCe@dCO`Bc@nBg@tASbA_CxH[tBu@~HQXe@PaBNqAQQRw@zMq@bOGTO?yAaC_C{C}AgDmF_IpCwInD}I~D{M?iAc@{B_BwFeCiH]uBLq@rCwDh@aA`AkEDe@Ea@yDaGu@u@[FcBbBgBbAIZB^~AjFtApGXfCCn@MTcAp@s@rAg@b@{GtCwBrA?t@b@lCjAdK?x@{A~@gBt@aAz@cDnAMTAn@H\\RV|KwFhB_BhBgAdHoDX[FUCKMDeHfEeChAm@J_@Kk@qEe@kCuAaKkAeLk@cDDkAgAoH@s@`@sBNkGE_BUaCDWp@}@Jq@MeDS}AQ]QEWJS^Il@IfFQn@y@n@mBz@a@h@ChAb@zJLp@NPNAbBsAt@nBJAXe@ZeAFw@DyGYwD@UZq@C}AMGJVDC]DNCAYqBnCcDxAWd@Cr@\\lJNhAJVN@bBwARDlA`Df@nDp@nD\\jAN@dDeCxEuBnB{ATGLT|@`EbAfHM\\{@p@_AlAuL~FG\\\\jB`@jFn@hF?r@UT}Br@kCpBkCzAIb@Nl@`@FlCcBzC{ArE_DrDmB~CiAhAw@F]U@uDbBoGnDaACmA`@uBpAqEtBQX?t@F`@\\GjJ}EdBoAlJyErAcAHa@{DzAMAMY_BwK[kERo@dCyAj@{@t@i@\\CR\\~@tDHz@~@`CrBxGBx@e@pA",
+        "resource_state": 2
+    },
+    "average_speed": convert_speed(5.421),
+    "average_heartrate": 145,
+    "max_heartrate": 176,
+    "intensity_score": 0.778,
+    "target": 3,
+  },
+  {
+    "athlete": {
+      "id": 123,
+      "name": "Вадим Баринов",
+    },
+    "name": "Вечерний забег",
+    "distance": convert_distance(2713.4),
+    "moving_time": convert_moving_time(1274),
+    "total_elevation_gain": 19.3,
+    "type": "Run",
+    "id": 18567209351,
+    "start_date_local": convert_date("2025-08-17T19:37:30Z"),
+    "map": {
+        "id": "a18567209351",
+        "summary_polyline": "qvwjIq}hfH?`@l@UDROLERPp@BP@\\Qt@GLGDGNCAId@GFI?ADCZRh@?NIHB@OJwAfBy@f@UR[^Q`@a@ZSf@ILc@RMLKXSZQr@[VSZKh@AXDv@P~@@f@BLNPPN^h@Ph@Lp@f@n@LTHv@@\\Jp@Pj@PbADLVP^^m@OG@QLEA]oAGGI@c@XY^MDGE[[GMSUGQEc@Fi@AI[]{@aBYm@EEM?SXa@\\QRWPQV]Vi@p@IXYWU[WQKKGUg@o@Wc@AGBC?Ba@^An@DNN^FXGBb@f@XRZl@MDIFSVWj@KJEFEhAFnBYnBCdA?b@Bq@NkA@oAH{@DaAAi@DUPe@\\a@P_@h@c@d@s@x@}@jA}AHYBUAm@MgCCk@BUFKr@c@R]TI`@q@X[Py@PU\\u@\\WRYVi@Xa@j@oAPQn@_@^]RWf@Wn@o@DO@OEs@@KHYNQVWDMAQGUEw@Mk@QLAFVz@",
+        "resource_state": 2
+    },
+    "average_speed": convert_speed(2.13),
+    "average_heartrate": 165.1,
+    "max_heartrate": 187.0,
+    "intensity_score": 0.812,
+    "target": 3,
+  },
+  {
+    "athlete": {
+      "id": 123,
+      "name": "Вадим Баринов",
+    },
+    "name": "Тренировка (после обеда)",
+    "distance": convert_distance(3744.2),
+    "moving_time": convert_moving_time(1511.0),
+    "total_elevation_gain": 320.1,
+    "type": "Ride",
+    "id": 15910746495,
+    "start_date_local": convert_date("2025-08-15T18:19:28Z"),
+    "map": {
+        "id": "a18567582378",
+        "summary_polyline": "gzmiIkhifHNDFNJv@B`As@nIg@fFYdEMhAKvBIv@IvEBfBAnCDbBAHIN[R[f@UXo@^g@RqBVc@Jc@K_ABaBMw@OcAa@i@Ky@{@uBwDsAgBOO}@eBY]w@sAi@w@w@qAgAyAc@y@c@o@@MADm@aDY{CW_BSkB{@uFMuAM{@MgBW_CWwAGGOD?EAGBFDBLQb@iBFs@@cBCSMIOCK@GHAVAxFEn@EWCGEBAX@F@@BEJBMBD@M@?DB@HU@[@B@A@YCa@OoAKsAAw@m@iDOcBQ}@MsA[cCUiAU}@ASFSGcA_AmFSaGIaAAYFgAH[`@_@Tc@@QAkAKs@?WJUXSPSF_@GkCQoBOm@EIQIQJGHSh@ANIrCG~AG`@U\\_@\\aAXYL_@Vc@`@EJGVDf@RjBDdBFpA?n@NnANf@JDJC|@w@t@}@Na@?M?HEGDJFQIF@@",
+        "resource_state": 2
+    },
+    "average_speed": convert_speed(5.1),
+    "average_heartrate": 148.7,
+    "max_heartrate": 176,
+    "intensity_score": 0.913,
+    "target": 4,
+  },
 ]
 
 class StravaFetchAllActivities:
