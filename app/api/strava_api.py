@@ -10,7 +10,7 @@ class StravaAPI:
   def generate_jwt(self, payload, token_url=settings.strava.token_url):
     resp = httpx.post(
       token_url,
-      json=payload,
+      data=payload,
       timeout=30,
       verify=False,
     )
@@ -24,46 +24,31 @@ class StravaAPI:
       athlete=AthleteDto(
         id=token_json["athlete"]["id"],
         username=token_json["athlete"]["username"],
+        firstname=token_json["firstname"],
+        lastname=token_json["athlete"]["lastname"],
       )
     )
     
   def generate_access(self, code, token_url=settings.strava.token_url):
-    payload = StravaMapper().token_url_payload_for_authorization(code, token_url)
-    return self.generate_jwt(payload)
+    print(code)
+    payload = StravaMapper().token_url_payload_for_authorization(code)
+    return self.generate_jwt(payload, token_url)
     
-  def refresh_access_token(self, code, token_url=settings.strava.token_url):
-    payload = StravaMapper().token_url_payload_for_refresh(code, token_url)
-    return self.generate_jwt(payload)
+  def refresh_access_token(self, refresh_token, token_url=settings.strava.token_url):
+    payload = StravaMapper().token_url_payload_for_refresh(refresh_token)
+    return self.generate_jwt(payload, token_url)
   
   def headers(self, access_token):
     return {
       "Authorization": f"Bearer {access_token}",
     }
-    
-  def fetch_user_data(self, access_token):
-    endpoint_url = self.url + "/athlete"
-    resp = httpx.post(
-      endpoint_url, 
-      headers=self.headers(),
-      timeout=30,
-      verify=False,
-    )
-    resp.raise_for_status()
-    resp = resp.json()
-    print(resp)
-    return AthleteDto(
-      id=resp["id"],
-      username=resp["username"],
-      firstname=resp["firstname"],
-      lastname=resp["lastname"],
-    )
   
   def fetch_activities(self, access_token, before, after):
     # нужно дописать
     endpoint_url = ...
     resp = httpx.post(
       endpoint_url, 
-      headers=self.headers(),
+      headers=self.headers(access_token),
       timeout=30,
       verify=False,
     )
@@ -90,18 +75,20 @@ class StravaMapper:
                 redirect_uri=settings.strava.redirect_uri, 
                 scope=settings.strava.scope):
     return f"{url}?{urlencode(self.login_url_params(redirect_uri, scope))}"
-  
-  def token_url_payload(self, code, grand_type, client_secret=settings.strava.client_secret):
+    
+  def token_url_payload_for_authorization(self, code, client_secret=settings.strava.client_secret):
     return {
       "client_id": self.client_id,
       "client_secret": client_secret,
       "code": code,
-      "grant_type": grand_type,
+      "grant_type": "authorization_code",
     }
     
-  def token_url_payload_for_authorization(self, code, client_secret=settings.strava.client_secret):
-    return self.token_url_payload(code, "authorization_code", client_secret=client_secret)
-    
-  def token_url_payload_for_refresh(self, code, client_secret=settings.strava.client_secret):
-    return self.token_url_payload(code, "refresh_token", client_secret=client_secret)
+  def token_url_payload_for_refresh(self, refresh_token, client_secret=settings.strava.client_secret):
+    return {
+      "client_id": self.client_id,
+      "client_secret": client_secret,
+      "grant_type": "refresh_token",
+      "refresh_token": refresh_token,
+    }
     

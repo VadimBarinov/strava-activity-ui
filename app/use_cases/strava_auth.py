@@ -25,14 +25,13 @@ class StravaLoginUser:
     api = self.strava_api_cls()
     token_set = api.generate_access(code)
     # сохранение токена в redis
-    athlete = api.fetch_user_data(access_token=token_set.access_token)
     # здесь еще должна быть проверка на существование пользователя в бд
       # если его нет, то добавляем
     user = self.user_cls(
-      user_id=athlete.id,
-      username=athlete.username,
-      firstname=athlete.firstname,
-      lastname=athlete.lastname,
+      user_id=token_set.athlete.id,
+      username=token_set.athlete.username,
+      firstname=token_set.athlete.firstname,
+      lastname=token_set.athlete.lastname,
     )
     login_user(user, remember=True)
-    return athlete
+    return token_set.athlete

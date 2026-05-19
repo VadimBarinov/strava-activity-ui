@@ -32,10 +32,7 @@ StravaAPI <-- StravaMapper -- : payload
 StravaLoginUser <-- StravaAPI : token_set
 
 StravaLoginUser -> TokensRedisClient ++ #SkyBlue : set(token_set, athlete_id)
-deactivate TokensRedisClient
-TokensRedisClient -> Redis
-StravaLoginUser -> StravaAPI : fetch_user_data(access_token)
-StravaLoginUser <-- StravaAPI -- : athlete
+TokensRedisClient -> Redis --
 StravaLoginUser -> UsersRepository ++ #SkyBlue : fetch_by_id(athlete_id)
 UsersRepository -> DB
 UsersRepository <-- DB
