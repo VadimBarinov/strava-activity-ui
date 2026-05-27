@@ -1,7 +1,7 @@
 from urllib.parse import urlencode
 import httpx
 from config import settings
-from app.domain.dtos import AthleteDto, TokenDto, ActivityDto
+from app.domain.dtos import AthleteDto, MapDto, TokenDto, ActivityDto
 
 class StravaAPI:
   def __init__(self, url=settings.strava.api_base):
@@ -39,18 +39,35 @@ class StravaAPI:
       "Authorization": f"Bearer {access_token}",
     }
   
-  def fetch_activities(self, access_token, before, after):
-    # нужно дописать
-    endpoint_url = ...
+  def fetch_activities(self, access_token, before):
+    endpoint_url = self.url + "/athlete/activities"
+    if before:
+      before_timestamp = int(before.timestamp())
+      endpoint_url += f"?before={before_timestamp}"
     resp = httpx.post(
       endpoint_url, 
       headers=self.headers(access_token),
-      timeout=30,
-      verify=False,
     )
     resp.raise_for_status()
     resp = resp.json()
-    return ActivityDto(...)
+    return ActivityDto(
+      id=resp["id"],
+      athlete=AthleteDto(id=resp["athlete"]["id"]),
+      name=resp["name"],
+      start_date_local=resp["start_date_local"],
+      type=resp["type"],
+      distance=resp["distance"],
+      moving_time=resp["moving_time"],
+      average_speed=resp["average_speed"],
+      max_speed=resp["max_speed"],
+      total_elevation_gain=resp["total_elevation_gain"],
+      average_heartrate=resp["average_heartrate"],
+      max_heartrate=resp["max_heartrate"],
+      map=MapDto(
+        id=resp["map"]["id"],
+        summary_polyline=resp["map"]["summary_polyline"],
+      ),
+    )
   
 class StravaMapper:
   def __init__(self, client_id=settings.strava.client_id):
@@ -86,4 +103,3 @@ class StravaMapper:
       "grant_type": "refresh_token",
       "refresh_token": refresh_token,
     }
-    
