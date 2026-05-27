@@ -1,6 +1,7 @@
 from config import settings
 from redis import Redis
 from app.domain.dtos import TokenDto, AthleteDto
+import json
 
 class TokenRedisClient:
   def __init__(self, redis_url=settings.redis_url,
@@ -12,7 +13,8 @@ class TokenRedisClient:
     return f"{self.prefix}{key}"
   
   def get(self, key):
-    obj = self.connection.get(self._key(key))
+    str_obj = self.connection.get(self._key(key))
+    obj = json.loads(str_obj)
     token_set = TokenDto(
       access_token=obj["access_token"],
       refresh_token=obj["refresh_token"],
@@ -26,7 +28,7 @@ class TokenRedisClient:
     )
     return token_set
   
-  def set(self, token, key):
+  def set(self, token):
     obj = {
       "access_token": token.access_token,
       "refresh_token": token.refresh_token,
@@ -36,4 +38,5 @@ class TokenRedisClient:
       "athlete_firstname": token.athlete.firstname,
       "athlete_lastname": token.athlete.lastname,
     }
-    self.connection.set(self._key(key), obj)
+    str_obj = json.dumps(obj)
+    self.connection.set(self._key(token.athlete.id), str_obj)

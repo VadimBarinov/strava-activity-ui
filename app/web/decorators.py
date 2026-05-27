@@ -15,7 +15,7 @@ def login_required_with_token(view):
         new_token_set = strava_api.refresh_access_token(
           token_set.refresh_token,
         )
-        redis_client.set(new_token_set, current_user.id)
+        redis_client.set(new_token_set)
       except Exception:
         logout_user()
     return view(*args, **kwargs)

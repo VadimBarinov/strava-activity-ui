@@ -11,8 +11,6 @@ class StravaAPI:
     resp = httpx.post(
       token_url,
       data=payload,
-      timeout=30,
-      verify=False,
     )
     resp.raise_for_status()
     token_json = resp.json()
@@ -23,7 +21,7 @@ class StravaAPI:
       athlete=AthleteDto(
         id=token_json["athlete"]["id"],
         username=token_json["athlete"]["username"],
-        firstname=token_json["firstname"],
+        firstname=token_json["athlete"]["firstname"],
         lastname=token_json["athlete"]["lastname"],
       )
     )

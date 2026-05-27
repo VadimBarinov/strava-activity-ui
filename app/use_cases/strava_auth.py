@@ -1,5 +1,6 @@
 from flask_login import login_user, UserMixin
 from app.api.strava_api import StravaAPI, StravaMapper
+from app.redis_client.tokens import TokenRedisClient
 
 class User(UserMixin):
   def __init__(self, user_id, username, firstname, lastname):
@@ -17,14 +18,18 @@ class StravaLoginUrlGetter:
     return mapper.login_url()
   
 class StravaLoginUser:
-  def __init__(self, strava_api_cls=StravaAPI, user_cls=User):
+  def __init__(self, strava_api_cls=StravaAPI, user_cls=User,
+               redis_client=TokenRedisClient):
     self.strava_api_cls = strava_api_cls
     self.user_cls = user_cls
+    self.redis_client = redis_client()
   
   def login_and_get_data(self, code):
     api = self.strava_api_cls()
     token_set = api.generate_access(code)
+    self.redis_client.set(token_set)
     # сохранение токена в redis
+    
     # здесь еще должна быть проверка на существование пользователя в бд
       # если его нет, то добавляем
     user = self.user_cls(
