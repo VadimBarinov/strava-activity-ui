@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from app.api.strava_api import StravaAPI
+from app.api.predict_api import TypePredictorAPI, TypePredictorMapper
 from app.repositories.activities import ActivitiesRepository
 from app.redis_client.tokens import TokenRedisClient
 
@@ -30,9 +31,12 @@ class StravaFetchAllActivities:
   
 class StravaSyncLastActivities:
   def __init__(self, db_connection, strava_api_cls=StravaAPI,
+               predictor_api_cls=TypePredictorAPI, predictor_mapper_cls=TypePredictorMapper,
                redis_client=TokenRedisClient):
     self.repository = ActivitiesRepository(db_connection)
     self.strava_api_cls = strava_api_cls
+    self.predictor_api_cls = predictor_api_cls
+    self.predictor_mapper_cls = predictor_mapper_cls
     self.redis_client = redis_client()
   
   def call(self, athlete_id):
@@ -41,15 +45,21 @@ class StravaSyncLastActivities:
     
     api = self.strava_api_cls()
     new_activities_from_strava = api.fetch_activities(token_set.access_token, last_start_date)
-    for activity_dto in new_activities_from_strava:
-      self.repository.save_with_map(activity_dto)
-      
-    self.predict_types()
     
-  def predict_types(self):
-    # отправляет запрос на api для классификации
-    # обновляет записи в бд (добавляет target и intensity_score)
-    pass
+    if new_activities_from_strava:
+      for activity_dto in new_activities_from_strava:
+        self.repository.save_with_map(activity_dto)
+      self.predict_types(new_activities_from_strava)
+    
+  def predict_types(self, activities):
+    api = self.predictor_api_cls()
+    mapper = self.predictor_mapper_cls()
+    payload = mapper.payload_for_predict(activities)
+    activities_response = api.fetch_predicted_values(payload)
+    for activity in activities_response:
+      self.repository.update_intensity_score_and_target(
+        activity["id"], activity["intensity_score"], activity["target"], 
+      )
   
 class StravaFetchOneActivity:
   def __init__(self, db_connection, strava_api_cls=StravaAPI):

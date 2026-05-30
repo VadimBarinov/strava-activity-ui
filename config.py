@@ -16,6 +16,9 @@ class StravaConfig(BaseModel):
   auth_url: str
   token_url: str
   api_base: str
+  
+class PredictorConfig(BaseModel):
+  url: str
 
 class Settings(BaseSettings):
   database_url: str
@@ -23,6 +26,7 @@ class Settings(BaseSettings):
   secret_key: str
   redis_url: str
   strava: StravaConfig
+  predictor: PredictorConfig
   routes: RoutesConfig = RoutesConfig()
   model_config = SettingsConfigDict(
     env_file=(BASE_DIR / ".env"),
