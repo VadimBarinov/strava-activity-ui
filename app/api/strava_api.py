@@ -45,30 +45,34 @@ class StravaAPI:
     if after:
       after_timestamp = int(after.timestamp())
       endpoint_url += f"?after={after_timestamp}"
-    resp = httpx.post(
+    resp = httpx.get(
       endpoint_url, 
       headers=self.headers(access_token),
     )
     resp.raise_for_status()
     resp = resp.json()
-    return ActivityDto(
-      id=str(resp["id"]),
-      athlete=AthleteDto(id=str(resp["athlete"]["id"])),
-      name=resp["name"],
-      start_date=datetime.fromisoformat(resp["start_date"].replace("Z", "+00:00")),
-      type=resp["type"],
-      distance=resp["distance"],
-      moving_time=resp["moving_time"],
-      average_speed=resp["average_speed"],
-      max_speed=resp["max_speed"],
-      total_elevation_gain=resp["total_elevation_gain"],
-      average_heartrate=resp["average_heartrate"],
-      max_heartrate=resp["max_heartrate"],
-      map=MapDto(
-        id=str(resp["map"]["id"]),
-        summary_polyline=resp["map"]["summary_polyline"],
-      ),
-    )
+    return [
+      ActivityDto(
+        id=str(activity["id"]),
+        athlete=AthleteDto(id=str(activity["athlete"]["id"])),
+        name=activity["name"],
+        start_date=datetime.fromisoformat(activity["start_date"].replace("Z", "+00:00")),
+        start_date_local=datetime.fromisoformat(activity["start_date_local"].replace("Z", "+00:00")),
+        type=activity["type"],
+        distance=activity["distance"],
+        moving_time=activity["moving_time"],
+        average_speed=activity["average_speed"],
+        max_speed=activity["max_speed"],
+        total_elevation_gain=activity["total_elevation_gain"],
+        average_heartrate=activity["average_heartrate"],
+        max_heartrate=activity["max_heartrate"],
+        map=MapDto(
+          id=str(activity["map"]["id"]),
+          summary_polyline=activity["map"]["summary_polyline"],
+        ),
+      )
+      for activity in resp
+    ]
   
 class StravaMapper:
   def __init__(self, client_id=settings.strava.client_id):

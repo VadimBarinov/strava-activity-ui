@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from app.api.strava_api import StravaAPI
 from app.repositories.activities import ActivitiesRepository
+from app.redis_client.tokens import TokenRedisClient
 
 def convert_date(iso_date: str):
   dt = datetime.fromisoformat(iso_date.replace("Z", "+00:00"))
@@ -188,22 +189,26 @@ class StravaFetchAllActivities:
     self.strava_api_cls = strava_api_cls
     
   def call(self, athlete_id):
-    # только пользователь с таким id может перейти к своим тренировкам
-    
-    StravaSyncLastActivities(self.db_connection).call()
-    # получать тренировки из базы
+    StravaSyncLastActivities(self.db_connection).call(athlete_id)
+    activities = self.repository.fetch_all_by_user_id(athlete_id)
     return activities
   
 class StravaSyncLastActivities:
-  def __init__(self, db_connection):
+  def __init__(self, db_connection, strava_api_cls=StravaAPI,
+               redis_client=TokenRedisClient):
     self.repository = ActivitiesRepository(db_connection)
+    self.strava_api_cls = strava_api_cls
+    self.redis_client = redis_client()
   
-  def call(self):
-    # получает из бд последнюю тренировку (либо если нет, то None)
-    # получить токен из redis
-    # отправляет запрос в strava на получение тренировок
-      # туда отправляем промедуток времени (время последней тренировки в бд, текущее время)
-      # все новые тренировки добавляем в бд
+  def call(self, athlete_id):
+    last_start_date = self.repository.fetch_last_start_date_by_user_id(athlete_id)
+    token_set = self.redis_client.get(athlete_id)
+    
+    api = self.strava_api_cls()
+    new_activities_from_strava = api.fetch_activities(token_set.access_token, last_start_date)
+    for activity_dto in new_activities_from_strava:
+      self.repository.save_with_map(activity_dto)
+      
     self.predict_types()
     
   def predict_types(self):
@@ -217,8 +222,5 @@ class StravaFetchOneActivity:
     self.strava_api_cls = strava_api_cls
     
   def call(self, athlete_id, activity_id):
-    # только пользователь с таким id может перейти к своим тренировкам
-
-    # получать данные из базы по конкретной тренировке 
-    activity = [a for a in activities if str(a["id"]) == str(activity_id)].pop()
+    activity = self.repository.fetch_by_id_and_user_id(athlete_id, activity_id)
     return activity

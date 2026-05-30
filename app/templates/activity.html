@@ -9,7 +9,7 @@
 
   <div class="col-md-6 mt-3">
     <h5 class="fw-bold mb-0">
-      {{ activity.athlete.name }}
+      {{ current_user.firstname }} {{ current_user.lastname }}
     </h5>
     <p class="d-flex mb-0">
       {% if activity.type == "Ride" %}
@@ -76,8 +76,10 @@
                           VO2 Max
                         {% elif activity.target == 6 %}
                           Анаэробная
-                        {% else %}
+                        {% elif activity.target == 7 %}
                           Нейромышечная
+                        {% else %}
+                          Нет значения
                         {% endif %}
                       </h5>
                     </div>
@@ -98,7 +100,11 @@
                         Интенсивность
                       </p>
                       <h5 class="fw-bold mb-0">
+                        {% if activity.intensity_score %}
                         {{ activity.intensity_score | round(2) }}
+                        {% else %}
+                        Нет значения
+                        {% endif %}
                       </h5>
                     </div>
                   </div>

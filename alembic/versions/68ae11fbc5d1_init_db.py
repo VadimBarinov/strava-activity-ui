@@ -39,6 +39,7 @@ def upgrade() -> None:
             user_id TEXT REFERENCES users(id),
             name TEXT,
             start_date TIMESTAMP,
+            start_date_local TIMESTAMP,
             type_id TEXT REFERENCES types(id),
             distance REAL,
             moving_time REAL,

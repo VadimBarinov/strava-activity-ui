@@ -1,7 +1,7 @@
 from flask import render_template, redirect, request, url_for
 from flask_login import current_user, logout_user
 from app.use_cases.strava_auth import StravaLoginUrlGetter, StravaLoginUser
-from app.use_cases.strava_activities import StravaFetchAllActivities, StravaFetchOneActivity
+from app.use_cases.strava_activities import StravaFetchAllActivities, StravaFetchOneActivity, StravaSyncLastActivities
 from .decorators import login_required_with_token
 from app import db
 from . import bp

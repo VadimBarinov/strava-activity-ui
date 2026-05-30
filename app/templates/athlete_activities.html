@@ -23,7 +23,7 @@
         <div class="col-8">
           <div class="mb-4">
             <p class="fw-bold mb-0">
-              {{ activity.athlete.name }}
+              {{ current_user.firstname }} {{ current_user.lastname }}
             </p>
             <p class="d-flex small mb-0">
               {% if activity.type == "Ride" %}
