@@ -24,7 +24,7 @@
       {% else %}
         <i class="bi bi-person-walking me-2"></i>
       {% endif %}
-      {{ activity.start_date_local }}
+      {{ activity.start_date_local | convert_date }}
     </p>
   </div>
 
@@ -148,7 +148,7 @@
                       Время
                     </p>
                     <h5 class="fw-bold mb-0">
-                      {{ activity.moving_time }}
+                      {{ activity.moving_time | convert_moving_time }}
                     </h5>
                   </div>
                 </div>
@@ -168,7 +168,7 @@
                       Расстояние
                     </p>
                     <h5 class="fw-bold mb-0">
-                      {{ activity.distance | round(2) }} км
+                      {{ activity.distance | convert_distance | round(2) }} км
                     </h5>
                   </div>
                 </div>
@@ -188,7 +188,7 @@
                       Ср. скорость
                     </p>
                     <h5 class="fw-bold mb-0">
-                      {{ activity.average_speed | round(2) }} км/ч
+                      {{ activity.average_speed | convert_speed | round(2) }} км/ч
                     </h5>
                   </div>
                 </div>

@@ -4,20 +4,6 @@ from app.api.predict_api import TypePredictorAPI, TypePredictorMapper
 from app.repositories.activities import ActivitiesRepository
 from app.redis_client.tokens import TokenRedisClient
 
-def convert_date(iso_date: str):
-  dt = datetime.fromisoformat(iso_date.replace("Z", "+00:00"))
-  return dt.strftime("%d %B %Y г. в %H:%M")
-
-def convert_distance(distance_in_metres):
-  return distance_in_metres / 1000
-
-def convert_moving_time(seconds):
-  delta = timedelta(seconds=seconds)
-  return str(delta)
-
-def convert_speed(speed):
-  return speed * 3.6
-
 class StravaFetchAllActivities:
   def __init__(self, db_connection, strava_api_cls=StravaAPI):
     self.db_connection = db_connection
