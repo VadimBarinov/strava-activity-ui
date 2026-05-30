@@ -30,7 +30,7 @@ class ActivityDto:
   id: str
   athlete: AthleteDto
   name: str
-  start_date_local: datetime
+  start_date: datetime
   type: str
   distance: float
   moving_time: float

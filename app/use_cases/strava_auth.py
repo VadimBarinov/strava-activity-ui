@@ -24,7 +24,7 @@ class StravaLoginUser:
     self.user_cls = user_cls
     self.redis_client = redis_client()
   
-  def login_and_get_data(self, code):
+  def call(self, code):
     api = self.strava_api_cls()
     token_set = api.generate_access(code)
     self.redis_client.set(token_set)
@@ -39,4 +39,3 @@ class StravaLoginUser:
       lastname=token_set.athlete.lastname,
     )
     login_user(user, remember=True)
-    return token_set.athlete

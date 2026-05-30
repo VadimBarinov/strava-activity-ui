@@ -17,7 +17,7 @@ def strava_callback():
   code = request.args.get("code")
   if not code:
     return "No code returned", 400
-  athlete = StravaLoginUser().login_and_get_data(code)
+  StravaLoginUser().call(code)
   return redirect(url_for("strava_activity.athlete_activities"))
 
 @bp.route("/logout/strava", methods=["GET"])

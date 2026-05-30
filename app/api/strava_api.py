@@ -2,6 +2,7 @@ from urllib.parse import urlencode
 import httpx
 from config import settings
 from app.domain.dtos import AthleteDto, MapDto, TokenDto, ActivityDto
+from datetime import datetime
 
 class StravaAPI:
   def __init__(self, url=settings.strava.api_base):
@@ -39,11 +40,11 @@ class StravaAPI:
       "Authorization": f"Bearer {access_token}",
     }
   
-  def fetch_activities(self, access_token, before):
+  def fetch_activities(self, access_token, after):
     endpoint_url = self.url + "/athlete/activities"
-    if before:
-      before_timestamp = int(before.timestamp())
-      endpoint_url += f"?before={before_timestamp}"
+    if after:
+      after_timestamp = int(after.timestamp())
+      endpoint_url += f"?after={after_timestamp}"
     resp = httpx.post(
       endpoint_url, 
       headers=self.headers(access_token),
@@ -54,7 +55,7 @@ class StravaAPI:
       id=resp["id"],
       athlete=AthleteDto(id=resp["athlete"]["id"]),
       name=resp["name"],
-      start_date_local=resp["start_date_local"],
+      start_date=datetime.fromisoformat(resp["start_date"].replace("Z", "+00:00")),
       type=resp["type"],
       distance=resp["distance"],
       moving_time=resp["moving_time"],
