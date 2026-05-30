@@ -20,7 +20,7 @@ class StravaAPI:
       refresh_token=token_json["refresh_token"],
       expires_at=token_json["expires_at"],
       athlete=AthleteDto(
-        id=token_json["athlete"]["id"],
+        id=str(token_json["athlete"]["id"]),
         username=token_json["athlete"]["username"],
         firstname=token_json["athlete"]["firstname"],
         lastname=token_json["athlete"]["lastname"],
@@ -52,8 +52,8 @@ class StravaAPI:
     resp.raise_for_status()
     resp = resp.json()
     return ActivityDto(
-      id=resp["id"],
-      athlete=AthleteDto(id=resp["athlete"]["id"]),
+      id=str(resp["id"]),
+      athlete=AthleteDto(id=str(resp["athlete"]["id"])),
       name=resp["name"],
       start_date=datetime.fromisoformat(resp["start_date"].replace("Z", "+00:00")),
       type=resp["type"],
@@ -65,7 +65,7 @@ class StravaAPI:
       average_heartrate=resp["average_heartrate"],
       max_heartrate=resp["max_heartrate"],
       map=MapDto(
-        id=resp["map"]["id"],
+        id=str(resp["map"]["id"]),
         summary_polyline=resp["map"]["summary_polyline"],
       ),
     )

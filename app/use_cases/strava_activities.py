@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from app.api.strava_api import StravaAPI
+from app.repositories.activities import ActivitiesRepository
 
 def convert_date(iso_date: str):
   dt = datetime.fromisoformat(iso_date.replace("Z", "+00:00"))
@@ -181,17 +182,22 @@ activities = [
 ]
 
 class StravaFetchAllActivities:
-  def __init__(self, strava_api_cls=StravaAPI):
+  def __init__(self, db_connection, strava_api_cls=StravaAPI):
+    self.db_connection = db_connection
+    self.repository = ActivitiesRepository(db_connection)
     self.strava_api_cls = strava_api_cls
     
   def call(self, athlete_id):
     # только пользователь с таким id может перейти к своим тренировкам
     
-    StravaSyncLastActivities().call()
+    StravaSyncLastActivities(self.db_connection).call()
     # получать тренировки из базы
     return activities
   
 class StravaSyncLastActivities:
+  def __init__(self, db_connection):
+    self.repository = ActivitiesRepository(db_connection)
+  
   def call(self):
     # получает из бд последнюю тренировку (либо если нет, то None)
     # получить токен из redis
@@ -206,7 +212,8 @@ class StravaSyncLastActivities:
     pass
   
 class StravaFetchOneActivity:
-  def __init__(self, strava_api_cls=StravaAPI):
+  def __init__(self, db_connection, strava_api_cls=StravaAPI):
+    self.repository = ActivitiesRepository(db_connection)
     self.strava_api_cls = strava_api_cls
     
   def call(self, athlete_id, activity_id):
