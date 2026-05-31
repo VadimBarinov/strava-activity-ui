@@ -22,6 +22,7 @@ class PredictorConfig(BaseModel):
   
 class OpenrouterConfig(BaseModel):
   api_key: str
+  api_base: str
 
 class Settings(BaseSettings):
   database_url: str

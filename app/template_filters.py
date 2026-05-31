@@ -1,4 +1,6 @@
 from datetime import timedelta
+import markdown
+from markupsafe import Markup
 
 def convert_date(date: str):
   if not date:
@@ -19,3 +21,9 @@ def convert_speed(speed):
   if not speed:
     return None
   return speed * 3.6
+
+def md_filter(value):
+  if value is None:
+    return None
+  html = markdown.markdown(value, extensions=["nl2br"])
+  return Markup(html)

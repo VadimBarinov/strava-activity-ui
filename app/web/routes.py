@@ -1,7 +1,9 @@
 from flask import render_template, redirect, request, url_for
 from flask_login import current_user, logout_user
 from app.use_cases.strava_auth import StravaLoginUrlGetter, StravaLoginUser
-from app.use_cases.strava_activities import StravaFetchAllActivities, StravaFetchOneActivity, StravaSyncLastActivities
+from app.use_cases.strava_activities import StravaFetchAllActivities, StravaFetchOneActivity
+from app.use_cases.recommendations_updater import RecommendationUpdater
+from app.use_cases.recommendations_getter import RecommendationsGetter
 from .decorators import login_required_with_token
 from app import db
 from . import bp
@@ -36,10 +38,21 @@ def index():
 @login_required_with_token
 def athlete_activities():
   activities = StravaFetchAllActivities(db.get_db()).call(current_user.id)
-  return render_template("athlete_activities.html", activities=activities)
+  recommedations = RecommendationsGetter().get_recommendations(current_user.id)
+  recommedations_status = RecommendationsGetter().get_status(current_user.id)
+  recommedations_status = recommedations_status.value if recommedations_status else None
+  return render_template("athlete_activities.html", activities=activities,
+                         recommedations=recommedations,
+                         recommedations_status=recommedations_status)
 
 @bp.route("/activity/<activity_id>", methods=["GET"])
 @login_required_with_token
 def activity(activity_id: int):
   activity = StravaFetchOneActivity(db.get_db()).call(current_user.id, activity_id)
   return render_template("activity.html", activity=activity)
+
+@bp.route("/athlete-activities/update-recommedations", methods=["POST"])
+@login_required_with_token
+def update_recommedations():
+  RecommendationUpdater().call(current_user.id)
+  return redirect(url_for("strava_activity.athlete_activities"))

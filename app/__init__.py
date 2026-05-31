@@ -2,7 +2,7 @@ from flask import Flask
 from config import settings
 from .web import bp as web_bp
 from .login_manager import login_manager
-from .template_filters import convert_date, convert_distance, convert_moving_time, convert_speed
+from .template_filters import convert_date, convert_distance, convert_moving_time, convert_speed, md_filter
 
 def create_app():
   app = Flask(__name__)
@@ -17,6 +17,8 @@ def create_app():
   app.jinja_env.filters["convert_distance"] = convert_distance
   app.jinja_env.filters["convert_moving_time"] = convert_moving_time
   app.jinja_env.filters["convert_speed"] = convert_speed
+  
+  app.jinja_env.filters["md"] = md_filter
   
   from . import db
   db.init_app(app)

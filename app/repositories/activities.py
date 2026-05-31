@@ -12,7 +12,8 @@ class ActivitiesRepository:
       id, user_id, name, start_date, start_date_local, type_id, distance, moving_time, average_speed, max_speed, total_elevation_gain,
       average_heartrate, max_heartrate, map_id, intensity_score, target
       FROM activities
-      WHERE user_id = %s;
+      WHERE user_id = %s
+      ORDER BY start_date DESC;
       """,
       (user_id, )
     )

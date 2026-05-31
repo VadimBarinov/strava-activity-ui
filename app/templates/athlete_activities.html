@@ -10,6 +10,21 @@
   </button>
 </div>
 
+<form id="updateRecommedations" method="post" 
+    action="{{ url_for('strava_activity.update_recommedations') }}">
+
+  <div class="d-flex justify-content-between align-items-center alert alert-warning border-0 shadow-sm my-4">
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-cloud-arrow-up me-2"></i>
+      Получить рекомендации
+    </button>
+  </div>
+
+</form>
+
+{{ recommedations | md }}
+{{ recommedations_status }}
+
 {% for activity in activities %}
   <div id="{{ activity.id }}" class="card shadow-sm border-0 bg-light mb-5"
     role="button"
@@ -99,9 +114,13 @@
   {% for activity in activities %}
     renderRouteMapWithoutZoom(
       "map_{{ activity.map.id }}",
-      {{ activity.map.summary_polyline | tojson }}  // важно: tojson экранирует строку
+      {{ activity.map.summary_polyline | tojson }}
     );
   {% endfor %}
 </script>
+<script>
+  const currentStatus = '{{ recommedations_status }}';
+</script>
+<script src="{{ url_for('static', filename='js/refresh_page.js') }}"></script>
 
 {% endblock %}
