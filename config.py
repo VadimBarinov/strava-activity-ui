@@ -19,6 +19,9 @@ class StravaConfig(BaseModel):
   
 class PredictorConfig(BaseModel):
   url: str
+  
+class OpenrouterConfig(BaseModel):
+  api_key: str
 
 class Settings(BaseSettings):
   database_url: str
@@ -28,6 +31,7 @@ class Settings(BaseSettings):
   strava: StravaConfig
   predictor: PredictorConfig
   routes: RoutesConfig = RoutesConfig()
+  openrouter: OpenrouterConfig
   model_config = SettingsConfigDict(
     env_file=(BASE_DIR / ".env"),
     case_sensitive=False,
