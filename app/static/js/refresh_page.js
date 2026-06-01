@@ -17,3 +17,5 @@ function refreshWhileStatusIsPending(interval = 5000) {
     }
   }, interval);
 }
+
+refreshWhileStatusIsPending();
