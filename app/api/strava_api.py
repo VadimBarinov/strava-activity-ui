@@ -12,6 +12,8 @@ class StravaAPI:
     resp = httpx.post(
       token_url,
       data=data,
+      timeout=30,
+      verify=False,
     )
     resp.raise_for_status()
     token_json = resp.json()
@@ -31,6 +33,8 @@ class StravaAPI:
     resp = httpx.post(
       token_url,
       data=data,
+      timeout=30,
+      verify=False,
     )
     resp.raise_for_status()
     token_json = resp.json()
@@ -61,6 +65,8 @@ class StravaAPI:
     resp = httpx.get(
       endpoint_url, 
       headers=self.headers(access_token),
+      timeout=30,
+      verify=False,
     )
     resp.raise_for_status()
     resp = resp.json()

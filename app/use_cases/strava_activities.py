@@ -11,7 +11,7 @@ class StravaFetchAllActivities:
     self.strava_api_cls = strava_api_cls
     
   def call(self, athlete_id):
-    StravaSyncLastActivities(self.db_connection).call(athlete_id)
+    # StravaSyncLastActivities(self.db_connection).call(athlete_id)
     activities = self.repository.fetch_all_by_user_id(athlete_id)
     return activities
   

@@ -5,7 +5,10 @@ from config import settings
 
 class OpenAIClient:
   def __init__(self):
-    http_client = httpx.Client()
+    http_client = httpx.Client(
+      timeout=300,
+      verify=False,
+    )
     self.client = OpenAI(
       base_url=settings.openrouter.api_base,
       api_key=settings.openrouter.api_key,

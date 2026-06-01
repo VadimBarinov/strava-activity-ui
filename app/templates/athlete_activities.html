@@ -3,27 +3,66 @@
 
 {% block content %}
 
-<div class="mb-5">
-  <button class="btn btn-outline-primary mb-1 fw-bold" onclick="window.location.reload();">
-    <i class="bi bi-arrow-clockwise me-2"></i>
-    Синхронизировать со Strava
-  </button>
-</div>
-
-<form id="updateRecommedations" method="post" 
-    action="{{ url_for('strava_activity.update_recommedations') }}">
-
-  <div class="d-flex justify-content-between align-items-center alert alert-warning border-0 shadow-sm my-4">
-    <button type="submit" class="btn btn-primary">
-      <i class="bi bi-cloud-arrow-up me-2"></i>
-      Получить рекомендации
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <button class="btn btn-outline-primary mb-1 fw-bold" onclick="window.location.reload();">
+      <i class="bi bi-arrow-clockwise me-2"></i>
+      Синхронизировать со Strava
     </button>
   </div>
 
-</form>
+  <div>
+    <form id="updateRecommedations" method="post" 
+        action="{{ url_for('strava_activity.update_recommedations') }}">
 
-{{ recommedations | md }}
-{{ recommedations_status }}
+      {% if not recommedations_status %}
+        <button type="submit" class="btn btn-primary fw-bold">
+          <i class="bi bi-stars me-2"></i>
+          Получить рекомендации
+        </button>
+      {% elif recommedations_status == "done" %}
+        <button type="submit" class="btn btn-primary fw-bold">
+          <i class="bi bi-stars me-2"></i>
+          Обновить рекомендации
+        </button>
+      {% endif %}
+
+    </form>
+  </div>
+
+</div>
+
+{% if recommedations_status == "pending" %}
+  <div class="alert alert-warning border-0 shadow-sm my-4">
+    <i class="bi bi-clock-history me-2"></i>
+    Происходит генерация рекомендаций. Подождите немного...
+  </div>
+{% elif recommedations_status == "done" %}
+  <div class="alert alert-light border-0 shadow-sm my-4">
+      <h3 class="fw-bold text-success mb-4">
+        <i class="bi bi-check2-circle me-2"></i>
+        Рекомендации
+      </h3>
+      <div>
+        {{ recommedations | md }}
+      </div>
+  </div>
+{% elif recommedations_status == "failure" %}
+  <form id="retryRecommedations" method="post" 
+        action="{{ url_for('strava_activity.update_recommedations') }}">
+    <div class="d-flex justify-content-between align-items-center alert alert-danger border-0 shadow-sm my-4">
+      <div>
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Произошла ошибка при генерации рекомендаций
+      </div>
+      <button type="submit" class="btn btn-primary fw-bold">
+        <i class="bi bi-arrow-repeat me-2"></i>
+        Повторить попытку
+      </button>
+    </div>
+
+  </form>
+{% endif %}
 
 {% for activity in activities %}
   <div id="{{ activity.id }}" class="card shadow-sm border-0 bg-light mb-5"
@@ -119,7 +158,7 @@
   {% endfor %}
 </script>
 <script>
-  const currentStatus = '{{ recommedations_status }}';
+  const currentStatus = "{{ recommedations_status }}";
 </script>
 <script src="{{ url_for('static', filename='js/refresh_page.js') }}"></script>
 

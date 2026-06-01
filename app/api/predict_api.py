@@ -16,6 +16,8 @@ class TypePredictorAPI:
       self.url,
       headers=self.headers(),
       json=payload,
+      timeout=30,
+      verify=False,
     )
     resp.raise_for_status()
     return resp.json()["content"]
