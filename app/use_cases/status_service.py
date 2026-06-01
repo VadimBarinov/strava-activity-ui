@@ -22,9 +22,9 @@ class MarkFailure(StatusChangeRule):
     
 class RecommendationsStatusService:
   def __init__(self, rule=StatusChangeRule(),
-               redis_client=RecommendationsRedisClient()):
+               redis_client=RecommendationsRedisClient):
     self._rule = rule
-    self.redis_client = redis_client
+    self.redis_client = redis_client()
     
   def change_status(self, user_id):
     return self._rule.apply(self.redis_client, user_id)
