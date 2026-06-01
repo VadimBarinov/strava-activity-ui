@@ -5,6 +5,7 @@ title Просмотр тренировок авторизованного по�
 actor Client
 participant Web
 participant Orchestrator
+participant RecommendationsGetter
 participant StravaFetchAllActivities
 participant StravaSyncLastActivities
 participant StravaFetchOneActivity
@@ -12,6 +13,7 @@ participant StravaMapper
 participant StravaAPI
 participant TypePredictorAPI
 participant TokensRedisClient
+participant RecommendationsRedisClient
 participant ActivitiesRepository
 database Redis
 database DB 
@@ -44,6 +46,13 @@ ActivitiesRepository -> DB
 ActivitiesRepository <-- DB
 StravaFetchAllActivities <-- ActivitiesRepository -- : activities
 Orchestrator <-- StravaFetchAllActivities -- : activities
+
+Orchestrator -> RecommendationsGetter ++ #SkyBlue : get_recommendations(user_id)
+RecommendationsGetter -> RecommendationsRedisClient ++ #SkyBlue : get(user_id)
+RecommendationsRedisClient -> Redis
+RecommendationsRedisClient <-- Redis
+RecommendationsGetter <-- RecommendationsRedisClient -- : recommendations
+Orchestrator <-- RecommendationsGetter -- : recommedations
 
 Web <-- Orchestrator : athlete_activities()
 Client <-- Web : Отображение списка тренировок конкретного пользователя

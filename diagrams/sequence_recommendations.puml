@@ -1,0 +1,59 @@
+@startuml
+
+title Обновление рекомендаций
+
+actor Client
+participant Web
+participant Orchestrator
+participant RecommendationUpdater
+participant RecommedationsGetterJob
+participant Worker
+participant RecomendationsGenerator
+participant RecommendationsGetter
+participant PromptBuilder
+participant OpenAIClient
+participant RecommendationsRedisClient
+participant ActivitiesRepository
+database Redis
+database DB
+
+Client -> Web : Получить рекомендации
+Web -> Orchestrator : update_recommedations()
+
+Orchestrator -> RecommendationUpdater ++ #SkyBlue : call(user_id)
+RecommendationUpdater -> RecommendationsRedisClient ++ #SkyBlue : delete(user_id)
+RecommendationUpdater -> RecommedationsGetterJob : perform_async(user_id)
+deactivate RecommendationUpdater
+
+RecommedationsGetterJob ->> Worker : get_recommendations
+
+opt Асинхронная джоба
+Worker -> RecomendationsGenerator ++ #SkyBlue : call(user_id)
+
+RecomendationsGenerator -> ActivitiesRepository ++ #SkyBlue : fetch_all_by_user_id(user_id)[:10]
+ActivitiesRepository -> DB
+ActivitiesRepository <-- DB
+RecomendationsGenerator <-- ActivitiesRepository -- : activities
+
+RecomendationsGenerator -> PromptBuilder ++ #SkyBlue : build(json_data)
+RecomendationsGenerator <-- PromptBuilder -- : prompt
+RecomendationsGenerator -> OpenAIClient ++ #SkyBlue : perform(prompt)
+RecomendationsGenerator <-- OpenAIClient -- : recommendations
+
+RecomendationsGenerator -> RecommendationsRedisClient : set(user_id, recommendations)
+deactivate RecommendationsRedisClient
+deactivate RecomendationsGenerator
+
+end
+
+Orchestrator -> RecommendationsGetter ++ #SkyBlue : get_recommendations(user_id)
+RecommendationsGetter -> RecommendationsRedisClient ++ #SkyBlue : get(user_id)
+RecommendationsRedisClient -> Redis
+RecommendationsRedisClient <-- Redis
+RecommendationsGetter <-- RecommendationsRedisClient -- : recommendations
+Orchestrator <-- RecommendationsGetter -- : recommendations
+
+Web <-- Orchestrator : athlete_activities()
+Client <-- Web : Отображение списка тренировок конкретного пользователя
+
+@enduml
