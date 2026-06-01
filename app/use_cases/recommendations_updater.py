@@ -1,5 +1,5 @@
 from app.redis_client.recommendations import RecommendationsRedisClient
-from app.domain.enums import StatusRecommendationsEnum
+from app.use_cases.status_service import RecommendationsStatusService, MarkPending
 from app.jobs.recommendations import RecommedationsGetterJob
 
 class RecommendationUpdater:
@@ -8,5 +8,5 @@ class RecommendationUpdater:
   
   def call(self, athlete_id):
     self.redis_client().delete(athlete_id)
-    self.redis_client().set_status(athlete_id, StatusRecommendationsEnum.PENDING)
+    RecommendationsStatusService(MarkPending()).change_status(athlete_id)
     RecommedationsGetterJob.perform_async(athlete_id)

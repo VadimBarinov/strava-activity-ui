@@ -1,7 +1,7 @@
 from app.repositories.activities import ActivitiesRepository
 from app.redis_client.recommendations import RecommendationsRedisClient
 from app.domain.prompt_builder import PromptBuilder
-from app.domain.enums import StatusRecommendationsEnum
+from app.use_cases.status_service import RecommendationsStatusService, MarkDone, MarkFailure
 from app.api.openai import OpenAIClient
 import json
 from dataclasses import asdict
@@ -13,9 +13,13 @@ class RecomendationsGenerator:
     
   def call(self, athlete_id):
     activities = self.repository.fetch_all_by_user_id(athlete_id)[:10]
-    recommendations = self.request_from_ai(activities)
-    self.redis_client().set(athlete_id, recommendations)
-    self.redis_client().set_status(athlete_id, StatusRecommendationsEnum.DONE)
+    try:
+      recommendations = self.request_from_ai(activities)
+      self.redis_client().set(athlete_id, recommendations)
+      RecommendationsStatusService(MarkDone()).change_status(athlete_id)
+    except Exception:
+      RecommendationsStatusService(MarkFailure()).change_status(athlete_id)
+      raise
     
   def request_from_ai(self, activities):
     json_data = [
