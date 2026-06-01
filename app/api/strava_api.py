@@ -27,13 +27,26 @@ class StravaAPI:
       )
     )
     
+  def refresh_jwt(self, data, token_url=settings.strava.token_url):
+    resp = httpx.post(
+      token_url,
+      data=data,
+    )
+    resp.raise_for_status()
+    token_json = resp.json()
+    return TokenDto(
+      access_token=token_json["access_token"],
+      refresh_token=token_json["refresh_token"],
+      expires_at=token_json["expires_at"],
+    )
+    
   def generate_access(self, code, token_url=settings.strava.token_url):
     data = StravaMapper().token_url_data_for_authorization(code)
     return self.generate_jwt(data, token_url)
     
   def refresh_access_token(self, refresh_token, token_url=settings.strava.token_url):
     data = StravaMapper().token_url_data_for_refresh(refresh_token)
-    return self.generate_jwt(data, token_url)
+    return self.refresh_jwt(data, token_url)
   
   def headers(self, access_token):
     return {

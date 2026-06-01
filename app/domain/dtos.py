@@ -18,7 +18,7 @@ class TokenDto:
   access_token: str
   refresh_token: str
   expires_at: int
-  athlete: AthleteDto
+  athlete: AthleteDto | None = None
   
   def is_expired(self,
                  now=datetime.now().timestamp(),
