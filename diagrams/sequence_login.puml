@@ -14,7 +14,7 @@ participant UsersRepository
 Client -> Web : Нажимает \nна кнопку \nвойти
 Web -> Orchestrator : login_strava()
 
-Orchestrator -> StravaLoginUser ++ #SkyBlue : login_and_get_data(code)
+Orchestrator -> StravaLoginUser ++ #SkyBlue : login(code)
 StravaLoginUser -> StravaAPI ++ #SkyBlue : generate_access(code)
 StravaAPI -> StravaMapper ++ #SkyBlue : payload(code)
 StravaAPI <-- StravaMapper -- : payload
