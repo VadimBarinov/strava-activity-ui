@@ -7,15 +7,12 @@ participant Web
 participant Orchestrator
 participant StravaFetchOneActivity
 participant Repository
-database DB 
 
 Client -> Web : Просмотр \nтренировок
 Web -> Orchestrator : activity(activity_id)
 Orchestrator -> StravaFetchOneActivity ++ #SkyBlue : call(current_user_id, activity_id)
-StravaFetchOneActivity -> Repository ++ #SkyBlue : fetch_one_by_id_and_user_id(user_id, activity_id)
-Repository -> DB
-Repository <-- DB
-StravaFetchOneActivity <-- Repository -- : activity
+StravaFetchOneActivity -> Repository : fetch_one_by_id_and_user_id(user_id, activity_id)
+StravaFetchOneActivity <-- Repository : activity
 Orchestrator <-- StravaFetchOneActivity -- : activity
 
 Web <-- Orchestrator : activity(activity_id)

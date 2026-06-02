@@ -1,0 +1,25 @@
+@startuml
+
+title Асинхронная джоба для обновления рекомендаций
+
+participant RecommedationsGetterJob
+participant RecomendationsGenerator
+participant PromptBuilder
+participant OpenAIClient
+participant RedisClient
+participant Repository
+
+RecommedationsGetterJob -> RecomendationsGenerator ++ #SkyBlue : call(user_id)
+
+RecomendationsGenerator -> Repository : fetch_all_by_user_id(user_id)[:10]
+RecomendationsGenerator <-- Repository : activities
+
+RecomendationsGenerator -> PromptBuilder ++ #SkyBlue : build(json_data)
+RecomendationsGenerator <-- PromptBuilder -- : prompt
+RecomendationsGenerator -> OpenAIClient ++ #SkyBlue : perform(prompt)
+RecomendationsGenerator <-- OpenAIClient -- : recommendations
+
+RecomendationsGenerator -> RedisClient : set(user_id, recommendations)
+deactivate RecomendationsGenerator
+
+@enduml

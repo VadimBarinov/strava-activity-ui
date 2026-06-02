@@ -10,17 +10,15 @@ participant TypePredictorAPI
 participant RedisClient
 participant Repository
 
-StravaSyncLastActivities -> Repository ++ #SkyBlue : fetch_last_by_user_id(user_id)
+StravaSyncLastActivities -> Repository : fetch_last_by_user_id(user_id)
 StravaSyncLastActivities <-- Repository : last_activity
-StravaSyncLastActivities -> RedisClient ++ #SkyBlue : get(user_id)
-StravaSyncLastActivities <-- RedisClient -- : token_set
+StravaSyncLastActivities -> RedisClient : get(user_id)
+StravaSyncLastActivities <-- RedisClient : token_set
 StravaSyncLastActivities -> StravaAPI ++ #SkyBlue : fetch_activities(access_token, before, after)
 StravaSyncLastActivities <-- StravaAPI -- : activities_list
 StravaSyncLastActivities -> Repository : save_all(activities_list)
 StravaSyncLastActivities -> TypePredictorAPI ++ #SkyBlue : predict(activities_list)
 StravaSyncLastActivities <-- TypePredictorAPI -- : activities_list
 StravaSyncLastActivities -> Repository : update_predicted_fields(activities_list)
-deactivate StravaSyncLastActivities
-deactivate Repository
 
 @enduml

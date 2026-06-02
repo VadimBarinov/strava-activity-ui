@@ -17,13 +17,13 @@ Orchestrator -> StravaFetchAllActivities ++ #SkyBlue : call(current_user_id)
 StravaFetchAllActivities -> StravaSyncLastActivities : call()
 deactivate Repository
 
-StravaFetchAllActivities -> Repository ++ #SkyBlue : fetch_all_by_user_id(user_id)
-StravaFetchAllActivities <-- Repository -- : activities
+StravaFetchAllActivities -> Repository : fetch_all_by_user_id(user_id)
+StravaFetchAllActivities <-- Repository : activities
 Orchestrator <-- StravaFetchAllActivities -- : activities
 
 Orchestrator -> RecommendationsGetter ++ #SkyBlue : get_recommendations(user_id)
-RecommendationsGetter -> RedisClient ++ #SkyBlue : get(user_id)
-RecommendationsGetter <-- RedisClient -- : recommendations
+RecommendationsGetter -> RedisClient : get(user_id)
+RecommendationsGetter <-- RedisClient : recommendations
 Orchestrator <-- RecommendationsGetter -- : recommedations
 
 Web <-- Orchestrator : athlete_activities()
