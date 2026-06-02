@@ -58,10 +58,10 @@ class StravaAPI:
     }
   
   def fetch_activities(self, access_token, after):
-    endpoint_url = self.url + "/athlete/activities"
+    endpoint_url = self.url + "/athlete/activities?per_page=100"
     if after:
       after_timestamp = int(after.timestamp())
-      endpoint_url += f"?after={after_timestamp}"
+      endpoint_url += f"&after={after_timestamp}"
     resp = httpx.get(
       endpoint_url, 
       headers=self.headers(access_token),
