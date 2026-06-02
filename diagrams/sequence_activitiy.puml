@@ -6,19 +6,19 @@ actor Client
 participant Web
 participant Orchestrator
 participant StravaFetchOneActivity
-participant ActivitiesRepository
+participant Repository
 database DB 
 
-Client -> Web : Просмотр тренировок
+Client -> Web : Просмотр \nтренировок
 Web -> Orchestrator : activity(activity_id)
 Orchestrator -> StravaFetchOneActivity ++ #SkyBlue : call(current_user_id, activity_id)
-StravaFetchOneActivity -> ActivitiesRepository ++ #SkyBlue : fetch_one_by_id_and_user_id(user_id, activity_id)
-ActivitiesRepository -> DB
-ActivitiesRepository <-- DB
-StravaFetchOneActivity <-- ActivitiesRepository -- : activity
+StravaFetchOneActivity -> Repository ++ #SkyBlue : fetch_one_by_id_and_user_id(user_id, activity_id)
+Repository -> DB
+Repository <-- DB
+StravaFetchOneActivity <-- Repository -- : activity
 Orchestrator <-- StravaFetchOneActivity -- : activity
 
 Web <-- Orchestrator : activity(activity_id)
-Client <-- Web : Отображение конкретной тренировки
+Client <-- Web : Отображение \nконкретной \nтренировки
 
 @enduml

@@ -8,53 +8,25 @@ participant Orchestrator
 participant RecommendationsGetter
 participant StravaFetchAllActivities
 participant StravaSyncLastActivities
-participant StravaFetchOneActivity
-participant StravaMapper
-participant StravaAPI
-participant TypePredictorAPI
-participant TokensRedisClient
-participant RecommendationsRedisClient
-participant ActivitiesRepository
-database Redis
-database DB 
+participant RedisClient
+participant Repository
 
-Client -> Web : Просмотр тренировок
+Client -> Web : Просмотр \nтренировок
 Web -> Orchestrator : athlete_activities()
 Orchestrator -> StravaFetchAllActivities ++ #SkyBlue : call(current_user_id)
-StravaFetchAllActivities -> StravaSyncLastActivities ++ #SkyBlue : call()
-StravaSyncLastActivities -> ActivitiesRepository ++ #SkyBlue : fetch_last_by_user_id(user_id)
-ActivitiesRepository -> DB
-ActivitiesRepository <-- DB
-StravaSyncLastActivities <-- ActivitiesRepository : last_activity
-StravaSyncLastActivities -> TokensRedisClient ++ #SkyBlue : get(user_id)
-TokensRedisClient -> Redis
-TokensRedisClient <-- Redis
-StravaSyncLastActivities <-- TokensRedisClient -- : token_set
-StravaSyncLastActivities -> StravaAPI ++ #SkyBlue : fetch_activities(access_token, before, after)
-StravaSyncLastActivities <-- StravaAPI -- : activities_list
-StravaSyncLastActivities -> ActivitiesRepository : save_all(activities_list)
-ActivitiesRepository -> DB
-StravaSyncLastActivities -> TypePredictorAPI ++ #SkyBlue : predict(activities_list)
-StravaSyncLastActivities <-- TypePredictorAPI -- : activities_list
-StravaSyncLastActivities -> ActivitiesRepository : update_predicted_fields(activities_list)
-deactivate StravaSyncLastActivities
-ActivitiesRepository -> DB
-deactivate ActivitiesRepository
+StravaFetchAllActivities -> StravaSyncLastActivities : call()
+deactivate Repository
 
-StravaFetchAllActivities -> ActivitiesRepository ++ #SkyBlue : fetch_all_by_user_id(user_id)
-ActivitiesRepository -> DB
-ActivitiesRepository <-- DB
-StravaFetchAllActivities <-- ActivitiesRepository -- : activities
+StravaFetchAllActivities -> Repository ++ #SkyBlue : fetch_all_by_user_id(user_id)
+StravaFetchAllActivities <-- Repository -- : activities
 Orchestrator <-- StravaFetchAllActivities -- : activities
 
 Orchestrator -> RecommendationsGetter ++ #SkyBlue : get_recommendations(user_id)
-RecommendationsGetter -> RecommendationsRedisClient ++ #SkyBlue : get(user_id)
-RecommendationsRedisClient -> Redis
-RecommendationsRedisClient <-- Redis
-RecommendationsGetter <-- RecommendationsRedisClient -- : recommendations
+RecommendationsGetter -> RedisClient ++ #SkyBlue : get(user_id)
+RecommendationsGetter <-- RedisClient -- : recommendations
 Orchestrator <-- RecommendationsGetter -- : recommedations
 
 Web <-- Orchestrator : athlete_activities()
-Client <-- Web : Отображение списка тренировок конкретного пользователя
+Client <-- Web : Отображение \nсписка \nтренировок
 
 @enduml

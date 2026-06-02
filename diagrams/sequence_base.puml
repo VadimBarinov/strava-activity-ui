@@ -5,12 +5,12 @@ title Взаимодействие компонентов системы
 actor "Пользователь" as Client
 participant "Приложение анализатор" as Application
 participant "Strava API" as Strava
-participant "Кэш Redis" as Redis
+participant "Redis" as Redis
 participant "API для классификации" as CatAPI
 participant "LLM" as LLM
 database "База данных" as DB
 
-Client -> Application: Пользователь заходит в приложение
+Client -> Application: Пользователь заходит \nв приложение
 Application -> Strava: Авторизация через Strava
 Application <-- Strava: Успешная авторизация, \nполучение access и refresh токенов
 Application -> Redis: Сохранение токенов в кэш
@@ -24,10 +24,10 @@ Application <-- CatAPI: Список тренировок с предсказа�
 Application -> LLM: Запрос на получение рекомендаций
 Application <-- LLM: Получение рекомендаций
 Application -> Redis: Сохранение рекомендаций для пользователя
-Application <-- Redis: Получние рекомендаций и кэша 
+Application <-- Redis: Получние рекомендаций из кэша 
 Application -> DB: Обновление данных по тренировкам: заполнение типа мощности и показателя интенсивности
 Application <-- DB: Получение списка тренировок с показателями физической активности
 Application <-- DB: Получение данных о пользователе
-Client <-- Application: Показ списка тренировок и рекомендаций пользователю
+Client <-- Application: Показ списка \nтренировок и \nрекомендаций
 
 @enduml
