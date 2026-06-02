@@ -16,13 +16,13 @@ Web -> Orchestrator : login_strava()
 
 Orchestrator -> StravaLoginUser ++ #SkyBlue : login_and_get_data(code)
 StravaLoginUser -> StravaAPI ++ #SkyBlue : generate_access(code)
-StravaAPI -> StravaMapper ++ #SkyBlue : payload(code, token_url)
+StravaAPI -> StravaMapper ++ #SkyBlue : payload(code)
 StravaAPI <-- StravaMapper -- : payload
 StravaLoginUser <-- StravaAPI -- : token_set
 
 StravaLoginUser -> TokensRedisClient : set(token_set, athlete_id)
 StravaLoginUser -> UsersRepository : fetch_by_id(athlete_id)
-StravaLoginUser <-- UsersRepository : current_athelete | None
+StravaLoginUser <-- UsersRepository : current_athelete or None
 
 opt Если пользователя нет в базе
     StravaLoginUser -> UsersRepository : save(current_athelete)
